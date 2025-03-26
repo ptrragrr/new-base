@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KurirController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +48,14 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
             Route::post('roles', [RoleController::class, 'index']);
             Route::post('roles/store', [RoleController::class, 'store']);
             Route::apiResource('roles', RoleController::class)
-                ->except(['index', 'store']);
+            ->except(['index', 'store']);
         });
+    });
+    Route::middleware('can:kurir')->group(function () {
+        Route::get('kurir', [KurirController::class, 'get'])->withoutMiddleware('can:kurir');
+        Route::post('kurir/store', [KurirController::class, 'store']);
+        Route::post('kurir', [KurirController::class, 'index']);
+        Route::apiResource('kurir', KurirController::class)
+        ->except(['index', 'store']);
     });
 });

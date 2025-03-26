@@ -50,6 +50,13 @@ const MainMenuConfig: Array<MenuItem> = [
                 name: "setting",
                 keenthemesIcon: "setting-2",
             },
+            {
+                heading: "kurir",
+                route: "/dashboard/kurir",
+                name: "kurir",
+                keenthemesIcon: "bi bi-person-circle",
+            },
+            
         ],
     },
 ];
