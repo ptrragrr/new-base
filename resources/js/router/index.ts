@@ -34,12 +34,30 @@ const routes: Array<RouteRecordRaw> = [
                 },
             },
             {
-                path: "/dashboard/kurir",
+                path: "/dashboard/datakurir",
                 name: "dashboard.kurir",
                 component: () => import("@/pages/dashboard/kurir/index.vue"),
                 meta: {
                     pageTitle: "Halaman Kurir",
                     breadcrumbs: ["Halaman", "Kurir"],
+                },
+            },
+            {
+                path: "/dashboard/akun",
+                name: "dashboard.akun",
+                component: () => import("@/pages/dashboard/akun/index.vue"),
+                meta: {
+                    pageTitle: "Akun dan Profil",
+                    breadcrumbs: ["Halaman", "Akun dan Profl"],
+                },
+            },
+            {
+                path: "/dashboard/pengiriman",
+                name: "dashboard.pengiriman",
+                component: () => import("@/pages/dashboard/pengiriman/index.vue"),
+                meta: {
+                    pageTitle: "Pengiriman",
+                    // breadcrumbs: ["Halaman", "Akun dan Profl"],
                 },
             },
             {

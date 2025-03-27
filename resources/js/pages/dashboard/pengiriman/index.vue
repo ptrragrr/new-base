@@ -3,54 +3,34 @@ import { h, ref, watch } from "vue";
 import { useDelete } from "@/libs/hooks";
 import Form from "./form.vue";
 import { createColumnHelper } from "@tanstack/vue-table";
-import type { kurir } from "@/types"; // Pastikan tipe data sesuai API
+import type { pengiriman } from "@/types"; // Pastikan tipe data sesuai API
 
-const column = createColumnHelper<kurir>();
+const column = createColumnHelper<pengiriman>();
 const paginateRef = ref<any>(null);
-const selected = ref<string>(""); // ID kurir yang dipilih
+const selected = ref<string>(""); // ID pengiriman yang dipilih
 const openForm = ref<boolean>(false); // Form tambah/edit
 
 // Hook untuk menghapus data
-const { delete: deletekurir } = useDelete({
+const { delete: deletePengiriman } = useDelete({
   onSuccess: () => paginateRef.value?.refetch(),
-  onError: (error) => alert(`Gagal menghapus kurir: ${error.message}`),
+  onError: (error) => alert(`Gagal menghapus pengiriman: ${error.message}`),
 });
 
-// Definisi kolom tabel kurir
+// Definisi kolom tabel pengiriman
 const columns = [
-  column.accessor("no", { header: "#" }),
-  column.accessor("name", { header: "Nama Kurir" }),
-  column.accessor("email", { header: "Email" }),
-  column.accessor("phone", { header: "No. Telp" }),
-  column.accessor("rating", {
-    header: "Rating",
-    cell: (cell) => {
-      const rating = cell.getValue();
-      return rating
-        ? h("span", { class: "fw-bold text-warning" }, "⭐".repeat(rating)) // Menampilkan bintang
-        : "Belum ada rating";
-    },
-  }),
-  column.accessor("photo", {
-    header: "Foto Profil",
-    cell: (cell) =>
-      cell.getValue()
-        ? h("img", {
-            src: `/storage/${cell.getValue()}`,
-            alt: "Foto Kurir",
-            style: "width: 50px; height: 50px; border-radius: 8px;",
-          })
-        : "Tidak ada foto",
-  }),
+  column.accessor("no_resi", { header: "No. Resi" }),
+  column.accessor("penerima", { header: "Penerima" }),
+  column.accessor("alamat", { header: "Alamat" }),
+  column.accessor("kurir", { header: "Kurir" }),
   column.accessor("status", {
     header: "Status",
     cell: (cell) =>
       h(
         "span",
         {
-          class: `badge ${cell.getValue() === "aktif" ? "bg-success" : "bg-danger"}`,
+          class: `badge ${cell.getValue() === "dikemas" ? "bg-primary" : "bg-success"}`,
         },
-        cell.getValue() === "aktif" ? "Aktif" : "Nonaktif"
+        cell.getValue() === "dikemas" ? "Dikirim" : "Diterima"
       ),
   }),
   column.accessor("id", {
@@ -67,7 +47,7 @@ const columns = [
               openForm.value = true;
             },
           },
-          h("i", { class: "la la-pencil fs-2" }) // Ikon Edit
+          h("i", { class: "la la-pencil fs-2" })
         ),
         // Tombol Hapus
         h(
@@ -75,12 +55,12 @@ const columns = [
           {
             class: "btn btn-sm btn-danger",
             onClick: () => {
-              // if (confirm("Apakah Anda yakin ingin menghapus kurir ini?")) {
-                deletekurir(`/kurir/${cell.getValue()}`);
-              // }
+            //   if (confirm("Apakah Anda yakin ingin menghapus pengiriman ini?")) {
+                deletePengiriman(`/pengiriman/${cell.getValue()}`);
+            //   }
             },
           },
-          h("i", { class: "la la-trash fs-2" }) // Ikon Hapus
+          h("i", { class: "la la-trash fs-2" })
         ),
       ]),
   }),
@@ -97,19 +77,19 @@ watch(openForm, (val) => {
 </script>
 
 <template>
-  <!-- Form Tambah/Edit Kurir -->
+  <!-- Form Tambah/Edit Pengiriman -->
   <Form :selected="selected" @close="openForm = false" v-if="openForm" @refresh="refresh" />
 
   <div class="card">
     <div class="card-header align-items-center">
-      <h2 class="mb-0">List Kurir</h2>
+      <h2 class="mb-0">List Pengiriman</h2>
       <button type="button" class="btn btn-sm btn-primary ms-auto" v-if="!openForm" @click="openForm = true">
         Tambah
         <i class="la la-plus"></i>
       </button>
     </div>
     <div class="card-body">
-      <paginate ref="paginateRef" id="table-kurir" url="/kurir" :columns="columns"></paginate>
+      <paginate ref="paginateRef" id="table-pengiriman" url="/pengiriman" :columns="columns"></paginate>
     </div>
   </div>
 </template>

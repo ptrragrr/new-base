@@ -2,28 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kurir; // Huruf besar untuk model
+use App\Models\Kurir;
 use App\Http\Requests\StoreKurirRequest;
 use App\Http\Requests\UpdateKurirRequest;
-use App\Models\Role;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class KurirController extends Controller
 {
-    /**
-     * Get all kurir (optional filter by role_id)
-     */
-    public function get(Request $request)
-    {
-        return response()->json([
-            'success' => true,
-            'data' => Role::all()
-        ]);
-    }
-
     /**
      * Get paginated list of kurir
      */
@@ -36,8 +25,9 @@ class KurirController extends Controller
         $data = Kurir::when($request->search, function (Builder $query, string $search) {
             $query->where('name', 'like', "%$search%")
                 ->orWhere('email', 'like', "%$search%")
+                ->orWhere('password', 'like', "%$search%")
+                ->orWhere('rating', 'like', "%$search%")
                 ->orWhere('phone', 'like', "%$search%")
-                ->orWhere('photo', 'like', "%$search%")
                 ->orWhere('status', 'like', "%$search%");
         })->latest()->paginate($per, ['*', DB::raw('@no := @no + 1 AS no')]);
 
@@ -51,10 +41,20 @@ class KurirController extends Controller
     {
         $validatedData = $request->validated();
 
+        // Enkripsi password sebelum disimpan
+        $validatedData['password'] = Hash::make($validatedData['password']);
+
+        // Default rating jika tidak dikirim
+        if (!isset($validatedData['rating'])) {
+            $validatedData['rating'] = 5;
+        }
+
+        // Simpan foto jika ada
         if ($request->hasFile('photo')) {
             $validatedData['photo'] = $request->file('photo')->store('photo', 'public');
         }
 
+        // Simpan data kurir ke database
         $kurir = Kurir::create($validatedData);
 
         return response()->json([
@@ -80,6 +80,19 @@ class KurirController extends Controller
     {
         $validatedData = $request->validated();
 
+        // Cek apakah password dikirim, jika ya, enkripsi sebelum menyimpan
+        if ($request->filled('password')) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        } else {
+            unset($validatedData['password']); // Jika tidak diisi, jangan update password
+        }
+
+        // Update rating jika dikirim
+        if ($request->filled('rating')) {
+            $validatedData['rating'] = max(1, min(5, $validatedData['rating']));
+        }
+
+        // Simpan foto jika ada, dan hapus yang lama jika diperbarui
         if ($request->hasFile('photo')) {
             if ($kurir->photo) {
                 Storage::disk('public')->delete($kurir->photo);
@@ -92,17 +105,22 @@ class KurirController extends Controller
             }
         }
 
+        // Update data kurir di database
         $kurir->update($validatedData);
 
         return response()->json([
             'success' => true,
-            'name' => $kurir->name,
-                    'email' => $kurir->email,
-                    'phone' => $kurir->phone,
-                    'photo' => $kurir->photo,
-                    'status' => $kurir->status
+            'kurir' => $kurir
         ]);
     }
+    public function get()
+{
+    return response()->json([
+        'success' => true,
+        'data' => Kurir::all() // Atau Role::all() jika itu yang diinginkan
+    ]);
+}
+
 
     /**
      * Delete a kurir

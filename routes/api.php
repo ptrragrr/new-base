@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KurirController;
+use App\Http\Controllers\PengirimanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +56,24 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
         Route::get('kurir', [KurirController::class, 'get'])->withoutMiddleware('can:kurir');
         Route::post('kurir/store', [KurirController::class, 'store']);
         Route::post('kurir', [KurirController::class, 'index']);
+        // Route::get('/kurir/get', [KurirController::class, 'get']);
         Route::apiResource('kurir', KurirController::class)
         ->except(['index', 'store']);
     });
+    Route::prefix('kurir')->group(function () {
+        Route::get('/', [KurirController::class, 'index']); // List kurir dengan pagination
+        Route::post('/store', [KurirController::class, 'store']); // Tambah kurir
+        // Route::get('/{kurir}', [KurirController::class, 'show']); // Lihat detail kurir
+        // Route::put('/{kurir}', [KurirController::class, 'update']); // Update kurir
+        // Route::delete('/{kurir}', [KurirController::class, 'destroy']); // Hapus kurir
+    });
+    Route::middleware('can:pengiriman')->group(function () {
+        Route::get('pengiriman', [PengirimanController::class, 'get'])->withoutMiddleware('can:pengiriman');
+        // Route::get('/pengiriman', [PengirimanController::class, 'get'])->withoutMiddleware(['can:pengiriman']);
+        Route::post('pengiriman/store', [PengirimanController::class, 'store']);
+        Route::post('pengiriman', [PengirimanController::class, 'index']);
+        Route::apiResource('pengiriman', PengirimanController::class)
+        ->except(['index', 'store']);
+    });
+
 });

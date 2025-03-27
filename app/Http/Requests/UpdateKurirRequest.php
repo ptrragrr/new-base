@@ -11,16 +11,19 @@ class UpdateKurirRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
-    {
-        return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:kurir,email,' . $this->kurir->id,
-            'phone' => 'required|string|max:15',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'status' => 'required|in:aktif,nonaktif'
-        ];
-    }
+    public function rules()
+{
+    return [
+        'name' => 'required|string',
+        'email' => 'required|email|unique:kurir,email,' . $this->kurir->id,
+        'phone' => 'required|string',
+        'password' => 'nullable|min:6', // Password opsional saat edit
+        'status' => 'required|string',
+        'rating' => 'required|integer|min:1|max:5',
+        'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ];
+}
+
 
     public function messages()
     {
@@ -34,8 +37,14 @@ class UpdateKurirRequest extends FormRequest
             'photo.mimes' => 'Format gambar harus jpeg, png, atau jpg.',
             'photo.max' => 'Ukuran gambar maksimal 2MB.',
             'status.required' => 'Status harus diisi.',
-            'status.in' => 'Status harus "aktif" atau "nonaktif".'
+            'status.in' => 'Status harus "aktif" atau "nonaktif".',
+            'password.min' => 'Password minimal 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'rating.numeric' => 'Rating harus berupa angka.',
+            'rating.min' => 'Rating minimal 1.',
+            'rating.max' => 'Rating maksimal 5.',
         ];
     }
+
     protected $table = 'kurir';
 }
