@@ -51,22 +51,10 @@ const MainMenuConfig: Array<MenuItem> = [
                 keenthemesIcon: "setting-2",
             },
             {
-                heading: "Data Kurir",
-                route: "/dashboard/datakurir",
+                heading: "kurir",
+                route: "/dashboard/kurir",
                 name: "kurir",
                 keenthemesIcon: "bi bi-person-circle",
-            },
-            {
-                heading: "Akun",
-                route: "/dashboard/akun",
-                name: "akun",
-                keenthemesIcon: "bi bi-person-circle",
-            },
-            {
-                heading: "Pengiriman",
-                route: "/dashboard/pengiriman",
-                name: "pengiriman",
-                keenthemesIcon: "bi bi-truck",
             },
             
         ],

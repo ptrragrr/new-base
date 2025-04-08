@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->string('phone')->unique(); // No. Telepon
             $table->string('photo')->nullable(); // Foto Profil
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif'); // Status Kurir
-            $table->rememberToken();
             $table->timestamps(); // Created_at & Updated_at
         });
     }

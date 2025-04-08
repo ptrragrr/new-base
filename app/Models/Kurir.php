@@ -14,23 +14,7 @@ class Kurir extends Model
         'email',
         'phone',
         'photo',
-        'password',
-        'rating',
         'status',
     ];
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected $casts = [
-        'password' => 'hashed',
-    ];
-
-    // Relasi dengan model Pengiriman
-    public function pengiriman()
-    {
-        return $this->hasMany(Pengiriman::class, 'kurir_id');
-    }
     protected $table = 'kurir';
 }
