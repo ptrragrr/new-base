@@ -34,15 +34,6 @@ const routes: Array<RouteRecordRaw> = [
                 },
             },
             {
-                path: "/dashboard/kurir",
-                name: "dashboard.kurir",
-                component: () => import("@/pages/dashboard/kurir/index.vue"),
-                meta: {
-                    pageTitle: "Halaman Kurir",
-                    breadcrumbs: ["Halaman", "Kurir"],
-                },
-            },
-            {
                 path: "/dashboard/profile",
                 name: "dashboard.profile",
                 component: () => import("@/pages/dashboard/profile/Index.vue"),
@@ -109,7 +100,7 @@ const routes: Array<RouteRecordRaw> = [
                 name: "404",
                 component: () => import("@/pages/errors/Error404.vue"),
                 meta: {
-                    pageTitle: "Error 404", 
+                    pageTitle: "Error 404",
                 },
             },
             {
