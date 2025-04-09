@@ -64,7 +64,7 @@
         </div>
     </div>
 </template>
-  
+
 <script>
 import { useQuery } from "@tanstack/vue-query";
 import { ref, defineComponent } from "vue";
@@ -187,5 +187,5 @@ export default defineComponent({
     }
 })
 </script>
-  
+
 <style></style>

@@ -73,6 +73,28 @@ const routes: Array<RouteRecordRaw> = [
                     breadcrumbs: ["Master", "Users"],
                 },
             },
+
+            {
+                path: "/dashboard/tambah/barang",
+                name: "dashboard.tambah.barang",
+                component: () =>
+                    import("@/pages/dashboard/barang/index.vue"),
+                meta: {
+                    pageTitle: "Barang",
+                    breadcrumbs: ["Tambah", "Barang"],
+                },
+            },
+
+            {
+                path: "/dashboard/tambah/kategori",
+                name: "dashboard.tambah.kategori",
+                component: () =>
+                    import("@/pages/dashboard/barang/kategori/index.vue"),
+                meta: {
+                    pageTitle: "Kategori",
+                    breadcrumbs: ["Tambah", "Kategori"],
+                },
+            },
         ],
     },
     {

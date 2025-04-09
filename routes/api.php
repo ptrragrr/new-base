@@ -4,36 +4,37 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\BarangController;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
+|----------------------------------------------------------------------
 | API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
+|----------------------------------------------------------------------
+| API routes for your application.
 */
 
-// Authentication Route
+// Authentication Routes
 Route::middleware(['auth', 'json'])->prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->withoutMiddleware('auth');
     Route::delete('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'me']);
 });
 
+// Settings Routes
 Route::prefix('setting')->group(function () {
     Route::get('', [SettingController::class, 'index']);
 });
 
 Route::middleware(['auth', 'verified', 'json'])->group(function () {
+    // Settings Update Route
     Route::prefix('setting')->middleware('can:setting')->group(function () {
         Route::post('', [SettingController::class, 'update']);
     });
 
     Route::prefix('master')->group(function () {
+        // User Routes
         Route::middleware('can:master-user')->group(function () {
             Route::get('users', [UserController::class, 'get']);
             Route::post('users', [UserController::class, 'index']);
@@ -42,12 +43,30 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
                 ->except(['index', 'store'])->scoped(['user' => 'uuid']);
         });
 
+        // Role Routes
         Route::middleware('can:master-role')->group(function () {
-            Route::get('roles', [RoleController::class, 'get'])->withoutMiddleware('can:master-role');
+            Route::get('roles', [RoleController::class, 'get']);
             Route::post('roles', [RoleController::class, 'index']);
             Route::post('roles/store', [RoleController::class, 'store']);
             Route::apiResource('roles', RoleController::class)
                 ->except(['index', 'store']);
         });
+
+            // Kategori Routes
+            Route::middleware('can:tambah-kategori')->group(function () {
+                Route::post('kategori', [KategoriController::class, 'store'])->name('kategori.store');
+            });
+        });
     });
+
+    Route::prefix('tambah')->group(function () {
+        // Barang Routes
+        Route::middleware('can:tambah-barang')->group(function () {
+            Route::get('barang', [BarangController::class, 'get']);
+            Route::post('barang', [BarangController::class, 'index']);
+            Route::post('barang/store', [BarangController::class, 'store']);
+            Route::apiResource('tambah/barang', BarangController::class);
+            Route::apiResource('barang', BarangController::class)
+            ->except(['index', 'store']);
+        });
 });

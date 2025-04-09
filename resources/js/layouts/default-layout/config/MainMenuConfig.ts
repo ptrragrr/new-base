@@ -45,6 +45,23 @@ const MainMenuConfig: Array<MenuItem> = [
                 ],
             },
             {
+                sectionTitle: "Tambah",
+                route: "/tambah",
+                name: "tambah-barang",
+                sub: [
+                    {
+                        heading: "Kategori",
+                        name: "master-role",
+                        route: "/dashboard/tambah/kategori",
+                    },
+                    {
+                        heading: "Barang",
+                        name: "tambah-barang",
+                        route: "/dashboard/tambah/barang",
+                    },
+                ],
+            },
+            {
                 heading: "Setting",
                 route: "/dashboard/setting",
                 name: "setting",
