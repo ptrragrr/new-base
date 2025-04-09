@@ -53,8 +53,10 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
         });
 
             // Kategori Routes
-            Route::middleware('can:tambah-kategori')->group(function () {
-                Route::post('kategori', [KategoriController::class, 'store'])->name('kategori.store');
+            // routes/api.php
+            Route::prefix('master')->group(function () {
+                Route::get('kategori', [KategoriController::class, 'index']);
+                Route::post('kategori/store', [KategoriController::class, 'store']);
             });
         });
     });

@@ -18,14 +18,8 @@ const columns = [
     column.accessor("no", {
         header: "#",
     }),
-    column.accessor("name", {
-        header: "Nama",
-    }),
-    column.accessor("email", {
-        header: "Email",
-    }),
-    column.accessor("phone", {
-        header: "No. Telp",
+    column.accessor("nama_kategori", {
+        header: "nama_kategori",
     }),
     column.accessor("uuid", {
         header: "Aksi",
@@ -75,7 +69,7 @@ watch(openForm, (val) => {
 
     <div class="card">
         <div class="card-header align-items-center">
-            <h2 class="mb-0">List Users</h2>
+            <h2 class="mb-0">List Kategori Barang</h2>
             <button
                 type="button"
                 class="btn btn-sm btn-primary ms-auto"
@@ -89,8 +83,8 @@ watch(openForm, (val) => {
         <div class="card-body">
             <paginate
                 ref="paginateRef"
-                id="table-users"
-                url="/master/users"
+                id="table-kategori"
+                url="/tambah/kategori"
                 :columns="columns"
             ></paginate>
         </div>

@@ -1,5 +1,5 @@
 <?php
-
+// app/Http/Controllers/KategoriController.php
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
@@ -7,28 +7,34 @@ use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
-    // Menampilkan form tambah kategori (jika diperlukan)
-    public function create()
+    public function index()
     {
-        return view('kategori.create');
+        return response()->json([
+            'success' => true,
+            'data' => Kategori::select('id', 'nama_kategori')->get()
+        ]);
     }
 
-    // Menyimpan kategori ke database
     public function store(Request $request)
     {
-        // Validasi data yang diterima
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
+        $request->validate([
+            'nama_kategori' => 'required|string|max:255',
         ]);
 
-        // Simpan data kategori ke database
-        Kategori::create([
-            'nama' => $validated['nama'],
-            'deskripsi' => $validated['deskripsi'],
-        ]);
+        $kategori = Kategori::create(['nama_kategori' => $request->nama_kategori]);
 
-        // Redirect atau memberi pesan sukses
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan');
+        return response()->json([
+            'success' => true,
+            'data' => $kategori
+        ]);
     }
+
+    public function show(Kategori $kategori)
+{
+    return response()->json([
+        'kategori' => [
+            'kategori_barang' => $barang->kategori_barang,
+        ]
+    ]);
+}
 }
