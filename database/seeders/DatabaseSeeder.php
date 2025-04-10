@@ -1,22 +1,24 @@
 <?php
+// database/seeders/RolePermissionSeeder.php
 
-namespace Database\Seeders;
-
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Spatie\Permission\Models\Permission;
 
-class DatabaseSeeder extends Seeder
+class RolePermissionSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function run()
     {
-        $this->call([
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            UserSeeder::class,
-            SettingSeeder::class,
-        ]);
+        // Buat permission kalau belum ada
+        Permission::firstOrCreate(['name' => 'tambah-kategori']);
+
+        $this->call(RolePermissionSeeder::class);
+        
+        // Cari user yang mau dikasih (contoh admin pertama)
+        $user = User::where('email', 'admin@example.com')->first();
+
+        if ($user) {
+            $user->givePermissionTo('tambah-kategori');
+        }
     }
 }

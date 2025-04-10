@@ -18,10 +18,10 @@ const columns = [
     column.accessor("no", {
         header: "#",
     }),
-    column.accessor("nama_kategori", {
-        header: "nama_kategori",
+    column.accessor("nama", {
+        header: "Nama Kategori",
     }),
-    column.accessor("uuid", {
+    column.accessor("id", {
         header: "Aksi",
         cell: (cell) =>
             h("div", { class: "d-flex gap-2" }, [
@@ -41,7 +41,7 @@ const columns = [
                     {
                         class: "btn btn-sm btn-icon btn-danger",
                         onClick: () =>
-                            deleteUser(`/master/users/${cell.getValue()}`),
+                            deleteUser(`/tambah/kategori/${cell.getValue()}`),
                     },
                     h("i", { class: "la la-trash fs-2" })
                 ),

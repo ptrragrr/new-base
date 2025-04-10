@@ -52,23 +52,25 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
                 ->except(['index', 'store']);
         });
 
-            // Kategori Routes
-            // routes/api.php
-            Route::prefix('master')->group(function () {
-                Route::get('kategori', [KategoriController::class, 'index']);
-                Route::post('kategori/store', [KategoriController::class, 'store']);
-            });
-        });
     });
+});
 
-    Route::prefix('tambah')->group(function () {
-        // Barang Routes
-        Route::middleware('can:tambah-barang')->group(function () {
-            Route::get('barang', [BarangController::class, 'get']);
-            Route::post('barang', [BarangController::class, 'index']);
-            Route::post('barang/store', [BarangController::class, 'store']);
-            Route::apiResource('tambah/barang', BarangController::class);
-            Route::apiResource('barang', BarangController::class)
-            ->except(['index', 'store']);
-        });
+Route::prefix('tambah')->group(function () {
+    // Barang Kategori
+    Route::middleware('can:tambah-kategori')->group(function () {
+        Route::get('kategori', [KategoriController::class, 'get']);
+        Route::post('kategori', [KategoriController::class, 'index']);
+        Route::post('kategori/store', [KategoriController::class, 'store']);
+        Route::apiResource('tambah/kategori', KategoriController::class);
+        Route::apiResource('kategori', KategoriController::class)
+        ->except(['index', 'store']);
+    });  
+    Route::middleware('can:tambah-barang')->group(function () {
+        Route::get('barang', [BarangController::class, 'get']);
+        Route::post('barang', [BarangController::class, 'index']);
+        Route::post('barang/store', [BarangController::class, 'store']);
+        Route::apiResource('tambah/barang', BarangController::class);
+        Route::apiResource('barang', BarangController::class)
+        ->except(['index', 'store']);
+    });      
 });

@@ -51,7 +51,7 @@ const MainMenuConfig: Array<MenuItem> = [
                 sub: [
                     {
                         heading: "Kategori",
-                        name: "master-role",
+                        name: "tambah-kategori",
                         route: "/dashboard/tambah/kategori",
                     },
                     {
