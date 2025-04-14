@@ -14,7 +14,7 @@ class KategoriRequest extends FormRequest
     public function rules()
     {
         return [
-            'nama' => 'required|string|max:255'
+            'kategori_barang' => 'required|string|max:255'
         ];
     }
 }

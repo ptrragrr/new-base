@@ -6,7 +6,7 @@ import axios from "@/libs/axios";
 import { toast } from "vue3-toastify";
 import type { User, Role } from "@/types";
 import ApiService from "@/core/services/ApiService";
-import { useRole } from "@/services/useRole";
+import { useRole } from "@/services/useRole";//iki
 
 const props = defineProps({
     selected: {
@@ -99,6 +99,7 @@ function submit() {
         });
 }
 
+// iki
 const role = useRole();
 const roles = computed(() =>
     role.data.value?.map((item: Role) => ({
@@ -233,7 +234,7 @@ watch(
                     <!--end::Input group-->
                 </div>
                 <div class="col-md-6">
-                    <!--begin::Input group-->
+                    <!--begin::Input group iki -->
                     <div class="fv-row mb-7">
                         <label class="form-label fw-bold fs-6 required">
                             Role

@@ -6,10 +6,7 @@ use App\Http\Requests\KategoriRequest;
 use App\Models\Kategori;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
-use App\Models\User;
 
 class KategoriController extends Controller
 {
@@ -24,6 +21,7 @@ class KategoriController extends Controller
     /**
      * Display a paginated list of the resource.
      */
+
     public function index(Request $request)
     {
         $per = $request->per ?? 10;
@@ -32,8 +30,7 @@ class KategoriController extends Controller
         DB::statement('set @no=0+' . $page * $per);
         $data = Kategori::
             when($request->search, function ($query, $search) {
-                $query->where('nama', 'like', "%$search%");
-                // $query->where('deskripsi', 'like', "%$search%");
+                $query->where('kategori_barang', 'like', "%$search%");
             })->latest()->paginate($per);
             // })->latest()->paginate($per, ['*', DB::raw('@no := @no + 1 AS no')]);
 
@@ -47,24 +44,24 @@ class KategoriController extends Controller
 
     // Menyimpan barang ke database
     public function store(KategoriRequest $request)
-{
-    $kategori = Kategori::create($request->validated());
-    
-    return response()->json([
-        'success' => true,
-        'message' => 'Kategori berhasil ditambahkan!',
-        'data' => $kategori,
-    ]);
-    if($kategori){
+    {
+        $validatedData = $request->validated();
+        $Kategori = Kategori::create([
+            'nama' => $validatedData['kategori_barang'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'kategori' => $Kategori,
+        ]);
     }
-}
 
     public function update(KategoriRequest $request, Kategori $kategori)
 {
     $validatedData = $request->validated();
 
     $kategori->update([
-        'nama' => $validatedData['nama'],
+        'kategori_barang' => $validatedData['kategori_barang'],
     ]);
 
     return response()->json([
@@ -90,7 +87,7 @@ public function destroy(Kategori $kategori)
 {
     return response()->json([
         'kategori' => [
-            'nama' => $kategori->nama,
+            'kategori_barang' => $kategori->kategori_barang,
         ]
     ]);
 }

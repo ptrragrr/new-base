@@ -19,16 +19,16 @@ const columns = [
         header: "#",
     }),
     column.accessor("nama_barang", {
-        header: "nama Barang",
+        header: "Nama Barang",
     }),
-    column.accessor("kategori_barang", {
-        header: "kategori Barang",
+    column.accessor("kategori", {
+        header: "Kategori Barang",
     }),
     column.accessor("harga_barang", {
-        header: "harga Barang",
+        header: "Harga Barang",
     }),
     column.accessor("stok_barang", {
-        header: "stok Barang",
+        header: "Stok Barang",
     }),
     // column.accessor("foto_barang", {
     //     header: "Foto Barang",

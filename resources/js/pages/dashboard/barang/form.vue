@@ -4,9 +4,9 @@ import { onMounted, ref, watch, computed } from "vue";
 import * as Yup from "yup";
 import axios from "@/libs/axios";
 import { toast } from "vue3-toastify";
-import type { Barang } from "@/types";
+import type { Barang, Kategori } from "@/types";
 import ApiService from "@/core/services/ApiService";
-import { useRole } from "@/services/useRole";
+import { useKategori } from "@/services/useKategori";
 
 const props = defineProps({
     selected: {
@@ -19,10 +19,11 @@ const emit = defineEmits(["close", "refresh"]);
 
 const barang = ref<Barang>({} as Barang);
 const formRef = ref();
+const kategoriOptions = ref<{ id: number; nama: string }[]>([]);
 
 const formSchema = Yup.object().shape({
     nama_barang: Yup.string().required("Nama harus diisi"),
-    kategori_barang: Yup.string().required("Email harus diisi"),
+    id_kategori: Yup.string().required("Kategori harus dipilih"),
     harga_barang: Yup.number().required("Masukkan harga"),
     stok_barang: Yup.number().required("Stok harus di isi"),
     // photo: Yup.mixed().nullable(),
@@ -50,9 +51,10 @@ function getEdit() {
 }
 
 function submit() {
+    console.log('submit')
     const formData = new FormData();
     formData.append("nama_barang", barang.value.nama_barang);
-    formData.append("kategori_barang", barang.value.kategori_barang);
+    formData.append("id_kategori", barang.value.id_kategori);
     formData.append("harga_barang", barang.value.harga_barang);
     formData.append("stok_barang", barang.value.stok_barang);
 
@@ -89,13 +91,23 @@ function submit() {
         });
 }
 
-// const role = useRole();
-// const roles = computed(() =>
-//     role.data.value?.map((item: Role) => ({
-//         id: item.id,
-//         text: item.full_name,
-//     }))
-// );
+const kategori = useKategori();
+const kategoris = computed(() =>
+    kategori.data.value?.map((item: Kategori) => ({
+        id: item.id,
+        text: item.nama,
+    }))
+);
+
+function getKategori() {
+    ApiService.get("/kategori-barang")
+        .then(({ data }) => {
+            kategoriOptions.value = data.kategori;
+        })
+        .catch((err) => {
+            toast.error("Gagal memuat kategori");
+        });
+}
 
 onMounted(async () => {
     console.log(props.selected);
@@ -158,26 +170,31 @@ watch(
                     <!--end::Input group-->
                 </div>
                 <div class="col-md-6">
-                    <!--begin::Input group-->
+                    <!--begin::Input group iki -->
                     <div class="fv-row mb-7">
                         <label class="form-label fw-bold fs-6 required">
-                            Kategori Barang
+                            Kategori
                         </label>
                         <Field
-                            class="form-control form-control-lg form-control-solid"
-                            type="text"
-                            name="kategori_barang"
-                            autocomplete="off"
-                            v-model="barang.kategori_barang"
-                            placeholder="Masukkan Kategori barang"
-                        />
+                            name="id_kategori"
+                            type="hidden"
+                            v-model="barang.id_kategori"
+                        >
+                            <select2
+                                placeholder="Pilih kategori"
+                                class="form-select-solid"
+                                :options="kategoris"
+                                name="id_kategori"
+                                v-model="barang.id_kategori"
+                            >
+                            </select2>
+                        </Field>
                         <div class="fv-plugins-message-container">
                             <div class="fv-help-block">
-                                <ErrorMessage name="kategori_barang" />
+                                <ErrorMessage name="id_kategori" />
                             </div>
                         </div>
                     </div>
-                    <!--end::Input group-->
                 </div>
                 <div class="col-md-6">
                     <!--begin::Input group-->

@@ -21,7 +21,7 @@ const kategori = ref<Kategori>({} as Kategori);
 const formRef = ref();
 
 const formSchema = Yup.object().shape({
-    nama: Yup.string().required("Nama harus diisi"),
+    nama: Yup.string().required("Kategori harus diisi"),
     // photo: Yup.mixed().nullable(),
 });
 
@@ -48,7 +48,7 @@ function getEdit() {
 
 function submit() {
     const formData = new FormData();
-    formData.append("nama", kategori.value.nama);
+    formData.append("kategori_barang", kategori.value.nama);
     // formData.append("kategori_barang", barang.value.kategori_barang);
     // formData.append("harga_barang", barang.value.harga_barang);
     // formData.append("stok_barang", barang.value.stok_barang);
@@ -60,7 +60,7 @@ function submit() {
         formData.append("_method", "PUT");
     }
 
-    block(document.getElementById("form-barang"));
+    block(document.getElementById("form-kategori"));
     axios({
         method: "post",
         url: props.selected
@@ -82,7 +82,7 @@ function submit() {
             toast.error(err.response.data.message);
         })
         .finally(() => {
-            unblock(document.getElementById("form-barang"));
+            unblock(document.getElementById("form-kategori"));
         });
 }
 
@@ -120,7 +120,7 @@ watch(
         ref="formRef"
     >
         <div class="card-header align-items-center">
-            <h2 class="mb-0">{{ selected ? "Edit" : "Tambah" }} User</h2>
+            <h2 class="mb-0">{{ selected ? "Edit" : "Tambah" }} Kategori</h2>
             <button
                 type="button"
                 class="btn btn-sm btn-light-danger ms-auto"
@@ -136,7 +136,7 @@ watch(
                     <!--begin::Input group-->
                     <div class="fv-row mb-7">
                         <label class="form-label fw-bold fs-6 required">
-                            Nama Barang
+                            Nama Kategori
                         </label>
                         <Field
                             class="form-control form-control-lg form-control-solid"
@@ -144,11 +144,11 @@ watch(
                             name="nama"
                             autocomplete="off"
                             v-model="kategori.nama"
-                            placeholder="Masukkan Nama"
+                            placeholder="Masukkan Kategori"
                         />
                         <div class="fv-plugins-message-container">
                             <div class="fv-help-block">
-                                <ErrorMessage name="nama" />
+                                <ErrorMessage name="kategori_barang" />
                             </div>
                         </div>
                     </div>
@@ -159,7 +159,7 @@ watch(
                     <!-- <div class="fv-row mb-7">
                         <label class="form-label fw-bold fs-6">
                             Foto Barang
-                        </label>
+                        </label>-->
                         <!--begin::Input-->
                         <!-- <file-upload
                             :files="photo"

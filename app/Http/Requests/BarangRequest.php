@@ -23,7 +23,7 @@ class BarangRequest extends FormRequest
     {
         return [
             'nama_barang' => 'required',
-            'kategori_barang' => 'required',
+            'id_kategori' => 'required',
             'harga_barang' => 'required',
             'stok_barang' => 'required',
         ];

@@ -28,13 +28,14 @@ class BarangController extends Controller
 
         DB::statement('set @no=0+' . $page * $per);
         $data = Barang::
+        join('kategoris', 'kategoris.id', '=', 'barang.id_kategori')->
             when($request->search, function ($query, $search) {
-                $query->where('nama_barang', 'like', "%$search%")
-                    ->orWhere('kategori_barang', 'like', "%$search%")
+                $query->where('barang.nama_barang', 'like', "%$search%")
+                    ->orWhere('kategoris.nama', 'like', "%$search%")
                     ->orWhere('harga_barang', 'like', "%$search%")
                     ->orWhere('stok_barang', 'like', "%$search%")
                     ->orWhere('foto_barang', 'like', "%$search%");
-            })->latest()->paginate($per);
+            })->select('barang.*', 'kategoris.nama as kategori')->latest()->paginate($per);
             // })->latest()->paginate($per, ['*', DB::raw('@no := @no + 1 AS no')]);
 
         $no = ($data->currentPage() - 1) * $per + 1;
@@ -51,7 +52,7 @@ class BarangController extends Controller
         $validatedData = $request->validated();
         $barang = Barang::create([
             'nama_barang' => $validatedData['nama_barang'],
-            'kategori_barang' => $validatedData['kategori_barang'],
+            'id_kategori' => $validatedData['id_kategori'],
             'harga_barang' => $validatedData['harga_barang'],
             'stok_barang' => $validatedData['stok_barang'],
         ]);
