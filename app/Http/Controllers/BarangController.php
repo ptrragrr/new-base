@@ -28,14 +28,14 @@ class BarangController extends Controller
 
         DB::statement('set @no=0+' . $page * $per);
         $data = Barang::
-        join('kategoris', 'kategoris.id', '=', 'barang.id_kategori')->
+        join('kategori', 'kategori.id', '=', 'barang.id_kategori')->
             when($request->search, function ($query, $search) {
                 $query->where('barang.nama_barang', 'like', "%$search%")
-                    ->orWhere('kategoris.nama', 'like', "%$search%")
+                    ->orWhere('kategori.nama', 'like', "%$search%")
                     ->orWhere('harga_barang', 'like', "%$search%")
                     ->orWhere('stok_barang', 'like', "%$search%")
                     ->orWhere('foto_barang', 'like', "%$search%");
-            })->select('barang.*', 'kategoris.nama as kategori')->latest()->paginate($per);
+            })->select('barang.*', 'kategori.nama as kategori')->latest()->paginate($per);
             // })->latest()->paginate($per, ['*', DB::raw('@no := @no + 1 AS no')]);
 
         $no = ($data->currentPage() - 1) * $per + 1;
@@ -69,7 +69,7 @@ class BarangController extends Controller
 
     $barang->update([
         'nama_barang' => $validatedData['nama_barang'],
-        'kategori_barang' => $validatedData['kategori_barang'],
+        'id_kategori' => $validatedData['id_kategori'], // GANTI INI
         'harga_barang' => $validatedData['harga_barang'],
         'stok_barang' => $validatedData['stok_barang'],
     ]);
@@ -98,10 +98,15 @@ public function destroy(Barang $barang)
     return response()->json([
         'barang' => [
             'nama_barang' => $barang->nama_barang,
-            'kategori_barang' => $barang->kategori_barang,
+            'id_kategori' => $barang->id_kategori, // GANTI INI
             'harga_barang' => $barang->harga_barang,
             'stok_barang' => $barang->stok_barang,
         ]
     ]);
 }
+
+public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'id_barang');
+    }
 }

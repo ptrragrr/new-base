@@ -48,6 +48,7 @@ const MainMenuConfig: Array<MenuItem> = [
                 sectionTitle: "Tambah",
                 route: "/tambah",
                 name: "tambah-barang",
+                keenthemesIcon: "bi bi-patch-plus",
                 sub: [
                     {
                         heading: "Kategori",
@@ -62,10 +63,16 @@ const MainMenuConfig: Array<MenuItem> = [
                 ],
             },
             {
+                heading: "Pembayaran",
+                route: "/dashboard/pembayaran",
+                name: "pembayaran",
+                keenthemesIcon: "bi bi-calculator",
+            },
+            {
                 heading: "Setting",
                 route: "/dashboard/setting",
                 name: "setting",
-                keenthemesIcon: "setting-2",
+                keenthemesIcon: "bi bi-gear-wide-connected",
             },
         ],
     },

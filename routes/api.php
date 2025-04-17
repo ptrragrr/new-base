@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -73,4 +74,17 @@ Route::prefix('tambah')->group(function () {
         Route::apiResource('barang', BarangController::class)
         ->except(['index', 'store']);
     });      
+});
+
+Route::middleware('can:tambah-transaksi')->group(function () {
+    // Rute ambil data transaksi (misalnya untuk list)
+    Route::get('transaksi', [TransaksiController::class, 'index']);
+    // Rute simpan transaksi baru
+    Route::post('/transaksi/store', [TransaksiController::class, 'store']);
+    // Rute ambil detail transaksi tertentu (jika diperlukan)
+    Route::get('transaksi/{id}', [TransaksiController::class, 'show']);
+    // Rute update transaksi
+    Route::put('transaksi/{id}', [TransaksiController::class, 'update']);
+    // Rute hapus transaksi
+    Route::delete('transaksi/{id}', [TransaksiController::class, 'destroy']);
 });

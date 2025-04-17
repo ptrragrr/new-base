@@ -10,10 +10,10 @@ class CreateBarangsTable extends Migration
     {
         Schema::create('barang', function (Blueprint $table) {
             $table->id();  // Menambahkan kolom ID sebagai primary key
-            $table->string('Nama_barang');
-            $table->string('Kategori_barang');
-            $table->decimal('Harga_barang', 10, 2);  // Menyimpan harga dalam format desimal
-            $table->string('Stok_barang');
+            $table->string('nama_barang');
+            $table->foreignId('id_kategori')->constrained('kategori')->onDelete('cascade');
+            $table->decimal('harga_barang', 10, 3);  // Menyimpan harga dalam format desimal
+            $table->string('stok_barang');
             // $table->string('foto_barang')->nullable();  // Kolom untuk menyimpan nama file gambar
             $table->timestamps();  // Menambahkan created_at dan updated_at
         });

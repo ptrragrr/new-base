@@ -95,6 +95,17 @@ const routes: Array<RouteRecordRaw> = [
                     breadcrumbs: ["Tambah", "Kategori"],
                 },
             },
+
+            {
+                path: "/dashboard/pembayaran",
+                name: "dashboard.transaksi",
+                component: () =>
+                    import("@/pages/dashboard/transaksi/index.vue"),
+                meta: {
+                    pageTitle: "Pembayaran",
+                    breadcrumbs: ["Pembayaran"],
+                },
+            },
         ],
     },
     {

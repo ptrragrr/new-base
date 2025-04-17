@@ -72,6 +72,7 @@ function submit() {
             ? `/tambah/barang/${props.selected}`
             : "/tambah/barang/store",
         data: formData,
+
         headers: {
             "Content-Type": "multipart/form-data",
         },
