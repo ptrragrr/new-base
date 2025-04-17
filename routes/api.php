@@ -7,6 +7,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\HistoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -76,7 +77,7 @@ Route::prefix('tambah')->group(function () {
     });      
 });
 
-Route::middleware('can:tambah-transaksi')->group(function () {
+Route::middleware('can:pembayaran')->group(function () {
     // Rute ambil data transaksi (misalnya untuk list)
     Route::get('transaksi', [TransaksiController::class, 'index']);
     // Rute simpan transaksi baru
@@ -87,4 +88,12 @@ Route::middleware('can:tambah-transaksi')->group(function () {
     Route::put('transaksi/{id}', [TransaksiController::class, 'update']);
     // Rute hapus transaksi
     Route::delete('transaksi/{id}', [TransaksiController::class, 'destroy']);
+});
+
+Route::middleware(['auth:sanctum', 'verified', 'json'])->prefix('history')->middleware('can:history')->group(function () {
+    Route::get('/', [HistoryController::class, 'index']);        // list semua history
+    Route::post('/', [HistoryController::class, 'store']);       // simpan history baru
+    Route::get('/{id}', [HistoryController::class, 'show']);     // lihat satu history
+    Route::put('/{id}', [HistoryController::class, 'update']);   // update history
+    Route::delete('/{id}', [HistoryController::class, 'destroy']); // hapus history
 });

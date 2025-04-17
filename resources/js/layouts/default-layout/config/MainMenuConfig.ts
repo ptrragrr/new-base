@@ -69,6 +69,12 @@ const MainMenuConfig: Array<MenuItem> = [
                 keenthemesIcon: "bi bi-calculator",
             },
             {
+                heading: "History",
+                route: "/dashboard/history",
+                name: "history",
+                keenthemesIcon: "bi bi-clock-history",
+            },
+            {
                 heading: "Setting",
                 route: "/dashboard/setting",
                 name: "setting",

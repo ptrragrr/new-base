@@ -106,6 +106,17 @@ const routes: Array<RouteRecordRaw> = [
                     breadcrumbs: ["Pembayaran"],
                 },
             },
+
+            {
+                path: "/dashboard/history",
+                name: "dashboard.history",
+                component: () =>
+                    import("@/pages/dashboard/history/index.vue"),
+                meta: {
+                    pageTitle: "history",
+                    breadcrumbs: ["history"],
+                },
+            },
         ],
     },
     {
