@@ -49,5 +49,14 @@ const loadBarang = () => {
     <div class="col-lg-4">
       <FormTransaksi :selectedBarang="selectedBarang" @refresh="loadBarang" />
     </div>
+    
+    <div class="card-body">
+            <paginate
+                ref="paginateRef"
+                id="table-transaksis"
+                url="/transaksis"
+                :columns="columns"
+            ></paginate>
+        </div>
   <!-- </div> -->
 </template>
