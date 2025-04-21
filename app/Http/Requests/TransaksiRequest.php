@@ -20,13 +20,15 @@ class TransaksiRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            'nama_kasir' => 'required',
-            'id_barang' => 'required',
-            'jumlah' => 'required',
-            'total_harga' => 'required',
-            'metode_pembayaran' => 'required',
-        ];
-    }
+{
+    return [
+        'nama_kasir' => 'required|string',
+        'metode_pembayaran' => 'required|string',
+        'keranjang' => 'required|array|min:1',
+        'keranjang.*.id_barang' => 'required|integer|exists:barang,id',
+        'keranjang.*.jumlah' => 'required|integer|min:1',
+        'keranjang.*.total_harga' => 'required|numeric|min:0',
+        'total' => 'required|numeric|min:0',
+    ];
+}
 }

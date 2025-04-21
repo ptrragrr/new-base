@@ -123,35 +123,29 @@ function removeProduct(index: number) {
 
 function submit(values: any, { resetForm }: any) {
   const formData = new FormData();
-  formData.append("nama_kasir", values.nama_kasir);
-  formData.append("metode_pembayaran", values.metode_pembayaran);
-  formData.append("keranjang", JSON.stringify(transaksis.value.keranjang));
-  formData.append("total", String(grandTotal.value));
+formData.append("nama_kasir", values.nama_kasir);
+formData.append("metode_pembayaran", values.metode_pembayaran);
+formData.append("keranjang", JSON.stringify(transaksis.value.keranjang)); // ⬅️ WAJIB stringify
+formData.append("total", grandTotal.value.toString()); // ⬅️ harus string
 
-  const formEl = document.getElementById("form-transaksi");
-  block(formEl);
-
-  axios({
-    method: "post",
-    url: "/transaksi/store",
-    data: formData,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  })
-    .then(() => {
-      emit("close");
-      emit("refresh");
-      toast.success("Transaksi berhasil disimpan");
-      resetForm();
-      transaksis.value.keranjang = [];
-    })
-    .catch((err: any) => {
-      toast.error(err.response?.data?.message || "Terjadi kesalahan.");
-    })
-    .finally(() => {
-      unblock(formEl);
-    });
+axios.post("/transaksi/store", formData, {
+  headers: {
+    "Content-Type": "multipart/form-data"
+  }
+})
+.then(() => {
+  emit("close");
+  emit("refresh");
+  toast.success("Transaksi berhasil disimpan");
+  resetForm();
+  transaksis.value.keranjang = [];
+})
+.catch((err: any) => {
+  toast.error(err.response?.data?.message || "Terjadi kesalahan.");
+})
+.finally(() => {
+  unblock(formEl);
+});
 }
 </script>
 
