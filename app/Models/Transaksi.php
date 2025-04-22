@@ -12,6 +12,7 @@ class Transaksi extends Model
         'nama_kasir',
         'jumlah',
         'total_harga',
+        'kode_transaksi',
         'tanggal',
     ];
 

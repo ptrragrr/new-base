@@ -1,13 +1,16 @@
 <?php
-namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+namespace App\Http\Controllers;
+
 use App\Models\History;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+
 
 class HistoryController extends Controller
 {
-    public function index()
+    public function get(Request $request)
     {
         return response()->json([
             'success' => true,
@@ -15,34 +18,50 @@ class HistoryController extends Controller
         ]);
     }
 
-    use Illuminate\Support\Str;
+    /**
+     * Display a paginated list of the resource.
+     */
 
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'nama_kasir' => 'required|string',
-        'metode_pembayaran' => 'required|string',
-        'total' => 'required|numeric',
-        'keranjang' => 'required|json',
-    ]);
+     public function index(Request $request)
+     {
+         $per = $request->per ?? 10;
+         $page = $request->page ? $request->page - 1 : 0;
+ 
+         DB::statement('set @no=0+' . $page * $per);
+         $data = History::when($request->search, function (Builder $query, string $search) {
+             $query->where('kode_transaksi', 'like', "%$search%")
+                 ->orWhere('nama_kasir', 'like', "%$search%")
+                 ->orWhere('metode_pembayaran', 'like', "%$search%");
+         })->latest()->paginate($per, ['*', DB::raw('@no := @no + 1 AS no')]);
+ 
+         return response()->json($data);
+     }
 
-    // Generate kode transaksi unik
-    $kodeTransaksi = 'TRX-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5));
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_kasir' => 'required|string',
+            'metode_pembayaran' => 'required|string',
+            'total' => 'required|numeric',
+            'keranjang' => 'required|json',
+        ]);
 
-    $history = History::create([
-        'kode_transaksi' => $kodeTransaksi,
-        'nama_kasir' => $validated['nama_kasir'],
-        'metode_pembayaran' => $validated['metode_pembayaran'],
-        'total' => $validated['total'],
-        'keranjang' => $validated['keranjang'],
-    ]);
+        $kodeTransaksi = 'TRX-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5));
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Transaksi berhasil disimpan',
-        'data' => $history
-    ]);
-}
+        $history = History::create([
+            'kode_transaksi' => $kodeTransaksi,
+            'nama_kasir' => $validated['nama_kasir'],
+            'metode_pembayaran' => $validated['metode_pembayaran'],
+            'total' => $validated['total'],
+            'keranjang' => $validated['keranjang'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Transaksi berhasil disimpan',
+            'data' => $history
+        ]);
+    }
 
     public function show($id)
     {
@@ -80,4 +99,20 @@ public function store(Request $request)
 
         return response()->json(['success' => true, 'message' => 'History berhasil dihapus']);
     }
+
+    public function detail($id)
+{
+    $detail = \DB::table('detail_transaksi')
+        ->join('barang', 'detail_transaksi.id_barang', '=', 'barang.id')
+        ->where('detail_transaksi.id_transaksi', $id)
+        ->select(
+            'barang.nama_barang as nama_barang',
+            'detail_transaksi.jumlah',
+            'detail_transaksi.harga_satuan',
+            'detail_transaksi.total_harga'
+        )
+        ->get();
+
+    return response()->json($detail);
+}
 }

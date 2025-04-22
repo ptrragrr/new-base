@@ -77,6 +77,16 @@ Route::prefix('tambah')->group(function () {
     });      
 });
 
+Route::middleware('can:history')->group(function () {
+    Route::get('history', [HistoryController::class, 'get']);
+    Route::get('/history/detail/{id}', [HistoryController::class, 'detail']);
+    // Route::get('/history/detail/{id}', [HistoryController::class, 'show']);
+    Route::post('history', [HistoryController::class, 'index']);
+    Route::post('history/store', [HistoryController::class, 'store']);
+    Route::apiResource('barang', HistoryController::class)
+    ->except(['index', 'store']);
+});    
+
 Route::middleware('can:pembayaran')->group(function () {
     // Rute ambil data transaksi (misalnya untuk list)
     Route::get('transaksi', [TransaksiController::class, 'index']);
@@ -90,10 +100,16 @@ Route::middleware('can:pembayaran')->group(function () {
     Route::delete('transaksi/{id}', [TransaksiController::class, 'destroy']);
 });
 
-Route::middleware(['auth:sanctum', 'verified', 'json'])->prefix('history')->middleware('can:history')->group(function () {
-    Route::get('/', [HistoryController::class, 'index']);        // list semua history
-    Route::post('/', [HistoryController::class, 'store']);       // simpan history baru
-    Route::get('/{id}', [HistoryController::class, 'show']);     // lihat satu history
-    Route::put('/{id}', [HistoryController::class, 'update']);   // update history
-    Route::delete('/{id}', [HistoryController::class, 'destroy']); // hapus history
-});
+// Route::middleware(['auth:sanctum', 'verified', 'json'])
+//     ->prefix('history')
+//     ->middleware('can:history')
+//     ->group(function () {
+//         Route::get('/detail_transaksi', [HistoryController::class, 'detailTransaksi']); // <- Pindahkan ke atas
+//         Route::get('/', [HistoryController::class, 'index']);           // Ambil semua data history
+//         Route::post('/', [HistoryController::class, 'store']);          // Simpan data history baru
+//         Route::get('/{id}', [HistoryController::class, 'show']);        // Lihat detail history
+//         Route::put('/{id}', [HistoryController::class, 'update']);      // Update data history
+//         Route::delete('/{id}', [HistoryController::class, 'destroy']);  // Hapus history
+//     });
+
+

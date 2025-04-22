@@ -14,10 +14,10 @@ class Barang extends Model
 
     protected $fillable = ['id_kategori', 'nama_barang', 'kategori_barang', 'harga_barang', 'stok_barang'];
 
-    public function transaksi()
-    {
-        return $this->hasMany(DetailTransaksi::class, 'id_barang');
-    }
+    // public function transaksi()
+    // {
+    //     return $this->hasMany(DetailTransaksi::class, 'id_barang');
+    // }
 
     public function kategori()
     {

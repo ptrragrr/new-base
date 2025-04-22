@@ -113,6 +113,21 @@ function tambahKeKeranjang() {
   transaksis.value.total_harga = 0;
 }
 
+function syncKeranjangWithLatestBarang() {
+  transaksis.value.keranjang = transaksis.value.keranjang.map((item) => {
+    const updated = barang.data.value?.find(b => b.id === item.id_barang);
+    if (updated) {
+      return {
+        ...item,
+        nama_barang: updated.nama_barang,
+        harga_barang: updated.harga_barang,
+        total_harga: updated.harga_barang * item.jumlah,
+      };
+    }
+    return item; // fallback kalau barang tidak ditemukan
+  });
+}
+
 function formatRupiah(angka: number): string {
   return "Rp " + angka.toLocaleString("id-ID");
 }
@@ -222,11 +237,10 @@ axios.post("/transaksi/store", formData, {
           <!-- Metode Pembayaran -->
           <div class="mb-3">
             <label class="form-label">Metode Pembayaran</label>
-            <Field as="select" name="metode_pembayaran" class="form-control" v-model="transaksis.metode_pembayaran">
+            <Field as="select" name="metode_pembayaran" class="form-control">
               <option disabled value="">Pilih metode</option>
               <option value="cash">Cash</option>
               <option value="debit">Debit</option>
-              <option value="qris">QRIS</option>
             </Field>
             <ErrorMessage name="metode_pembayaran" class="text-danger small" />
           </div>

@@ -10,6 +10,7 @@ use App\Models\Barang;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TransaksiController extends Controller
 {
@@ -25,6 +26,39 @@ class TransaksiController extends Controller
             'data' => Barang::all()
         ]);
     }
+
+    // use App\Models\Transaksi;
+
+// app/Http/Controllers/TransaksiController.php
+
+public function detail($id)
+{
+    $transaksi = Transaksi::with(['detail.barang'])->find($id);
+
+    if (!$transaksi) {
+        return response()->json(['success' => false, 'message' => 'Transaksi tidak ditemukan'], 404);
+    }
+
+    $detail = $transaksi->detail->map(function ($item) {
+        return [
+            'nama_barang' => $item->barang->nama_barang,
+            'jumlah' => $item->jumlah,
+            'harga_satuan' => $item->harga_satuan,
+            'total_harga' => $item->total_harga,
+        ];
+    });
+
+    return response()->json($detail);
+}
+
+public function show($id)
+{
+    $transaksi = Transaksi::with(['detail.barang'])->findOrFail($id);
+
+    return response()->json([
+        'detail' => $transaksi->detail,
+    ]);
+}
     
     public function store(Request $request)
 {
@@ -46,7 +80,11 @@ class TransaksiController extends Controller
     
     DB::beginTransaction();
     try {
+
+        $transaksiKode = 'PTR-' . strtoupper(Str::random(8));
+
         $transaksi = Transaksi::create([
+            'kode_transaksi' => $transaksiKode,
             'nama_kasir' => $validated['nama_kasir'],
             'metode_pembayaran' => $validated['metode_pembayaran'],
             'total' => $validated['total'],
@@ -79,4 +117,11 @@ class TransaksiController extends Controller
         ], 500);
     }
 }
+
+// private function generateKodeTransaksi(): string
+// {
+//     $datePart = date('Ymd'); // Contoh: 20250421
+//     $randomPart = strtoupper(substr(md5(uniqid()), 0, 6)); // Contoh: 7G9K2L
+//     return "PTR-{$datePart}-{$randomPart}";
+// }
 }

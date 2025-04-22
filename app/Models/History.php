@@ -14,19 +14,17 @@ class History extends Model
         return $this->belongsTo(transaksi::class, 'kode_transaksi', 'tanggal', 'total_harga', 'nama_barang');
     }
 
-    protected $table = 'histories'; // pastikan sama dengan nama tabel di DB
+    protected $table = 'transaksis'; // pastikan sama dengan nama tabel di DB
 
     protected $fillable = [
         'kode_transaksi',
         'nama_kasir',
         'metode_pembayaran',
-        'total',
-        'keranjang',
     ];    
 
-    protected $casts = [
-        'keranjang' => 'array', // biar langsung jadi array saat diakses
-        'total' => 'float',
-    ];
+    // protected $casts = [
+    //     'keranjang' => 'array', // biar langsung jadi array saat diakses
+    //     'total' => 'float',
+    // ];
 }
 
