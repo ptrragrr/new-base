@@ -87,7 +87,7 @@ public function store(Request $request)
             'kode_transaksi' => $transaksiKode,
             'nama_kasir' => $validated['nama_kasir'],
             'metode_pembayaran' => $validated['metode_pembayaran'],
-            'total' => $validated['total'],
+            'total_transaksi' => $validated['total'],
         ]);
 
         foreach ($keranjang as $item) {

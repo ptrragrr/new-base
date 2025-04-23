@@ -6,8 +6,10 @@ use App\Models\History;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
-
+use Illuminate\Support\Facades\View;
+use App\Models\Transaksi;
 
 class HistoryController extends Controller
 {
@@ -38,6 +40,29 @@ class HistoryController extends Controller
          return response()->json($data);
      }
 
+//      public function view_pdf()
+// {
+//     $data = Transaksi::with('kasir') // jika pakai relasi
+//         ->orderBy('created_at', 'desc')
+//         ->get();
+
+//     $html = View::make('transaksi.pdf', compact('data'))->render();
+
+//     $mpdf = new \Mpdf\Mpdf(['format' => 'A4']);
+//     $mpdf->WriteHTML($html);
+
+//     return response($mpdf->Output('', 'S'), 200)
+//         ->header('Content-Type', 'application/pdf');
+// }
+
+public function preview_pdf()
+{
+    $data = Transaksi::with(['kasir', 'details'])->orderBy('created_at', 'desc')->get();
+
+    Log::info($data);
+    return view('pdf', compact('data'));
+}
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -53,7 +78,7 @@ class HistoryController extends Controller
             'kode_transaksi' => $kodeTransaksi,
             'nama_kasir' => $validated['nama_kasir'],
             'metode_pembayaran' => $validated['metode_pembayaran'],
-            'total' => $validated['total'],
+            'total_transaksi' => $validated['total'],
             'keranjang' => $validated['keranjang'],
         ]);
 
