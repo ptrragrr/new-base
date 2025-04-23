@@ -23,7 +23,7 @@ const transaksis = ref({
   id_barang: null,
   jumlah: 1,
   total_harga: 0,
-  metode_pembayaran: "",
+  // metode_pembayaran: "",
   keranjang: [] as any[],
 });
 
@@ -57,9 +57,18 @@ watch(grandTotal, (newTotal) => {
 
 const formSchema = yup.object({
   nama_kasir: yup.string().required("Nama kasir wajib diisi"),
-  metode_pembayaran: yup.string().required("Metode pembayaran wajib dipilih"),
+  metode_pembayaran: yup
+    .string()
+    .required("Metode pembayaran wajib dipilih")
+    .oneOf(["cash", "debit"]),
   keranjang: yup.array().min(1, "Minimal satu barang harus ditambahkan"),
 });
+
+// const formSchema = yup.object({
+//   nama_kasir: yup.string().required("Nama kasir wajib diisi"),
+//   metode_pembayaran: yup.string().required("Metode pembayaran wajib dipilih"),
+//   keranjang: yup.array().min(1, "Minimal satu barang harus ditambahkan"),
+// });
 
 watch(
   [() => transaksis.value.id_barang, () => transaksis.value.jumlah],
@@ -136,32 +145,82 @@ function removeProduct(index: number) {
   transaksis.value.keranjang.splice(index, 1);
 }
 
+function batal() {
+  formRef.value?.resetForm();
+  transaksis.value = {
+    nama_kasir: "",
+    id_barang: null,
+    jumlah: 1,
+    total_harga: 0,
+    keranjang: [],
+  };
+  emit("close");
+}
+
 function submit(values: any, { resetForm }: any) {
   const formData = new FormData();
-formData.append("nama_kasir", values.nama_kasir);
-formData.append("metode_pembayaran", values.metode_pembayaran);
-formData.append("keranjang", JSON.stringify(transaksis.value.keranjang)); // ⬅️ WAJIB stringify
-formData.append("total", grandTotal.value.toString()); // ⬅️ harus string
 
-axios.post("/transaksi/store", formData, {
-  headers: {
-    "Content-Type": "multipart/form-data"
-  }
-})
-.then(() => {
-  emit("close");
-  emit("refresh");
-  toast.success("Transaksi berhasil disimpan");
-  resetForm();
-  transaksis.value.keranjang = [];
-})
-.catch((err: any) => {
-  toast.error(err.response?.data?.message || "Terjadi kesalahan.");
-})
-.finally(() => {
-  unblock(formEl);
-});
+  formData.append("nama_kasir", values.nama_kasir); // dari Field
+  formData.append("metode_pembayaran", values.metode_pembayaran); // dari Field
+  formData.append("keranjang", JSON.stringify(transaksis.value.keranjang)); // ⬅️ masih dari transaksis
+  formData.append("total", grandTotal.value.toString());
+
+  console.log("Submit metode:", values.metode_pembayaran); // debug
+
+  if (formRef.value instanceof HTMLElement) {
+  block(formRef.value);
+} else {
+  console.warn("formRef.value is not an HTMLElement", formRef.value);
 }
+
+  // block(formRef.value);
+
+  axios.post("/transaksi/store", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  })
+  .then(() => {
+    emit("close");
+    emit("refresh");
+    toast.success("Transaksi berhasil disimpan");
+    resetForm();
+    transaksis.value.keranjang = [];
+  })
+  .catch((err: any) => {
+    toast.error(err.response?.data?.message || "Terjadi kesalahan.");
+  })
+  .finally(() => {
+    unblock(formRef.value);
+  });
+}
+
+// function submit(values: any, { resetForm }: any) {
+//   const formData = new FormData();
+// formData.append("nama_kasir", values.nama_kasir);
+// formData.append("metode_pembayaran", values.metode_pembayaran);
+// formData.append("keranjang", JSON.stringify(transaksis.value.keranjang)); // ⬅️ WAJIB stringify
+// formData.append("total", grandTotal.value.toString()); // ⬅️ harus string
+
+// axios.post("/transaksi/store", formData, {
+//   headers: {
+//     "Content-Type": "multipart/form-data"
+//   }
+// })
+// .then(() => {
+//   emit("close");
+//   emit("refresh");
+//   toast.success("Transaksi berhasil disimpan");
+//   resetForm();
+//   transaksis.value.keranjang = [];
+// })
+// .catch((err: any) => {
+//   toast.error(err.response?.data?.message || "Terjadi kesalahan.");
+// })
+// .finally(() => {
+//   unblock(formEl);
+// });
+// }
 </script>
 
 <template>
@@ -242,14 +301,23 @@ axios.post("/transaksi/store", formData, {
               <option value="cash">Cash</option>
               <option value="debit">Debit</option>
             </Field>
+            <!-- <Field as="select" name="metode_pembayaran" class="form-control">
+              <option disabled value="">Pilih metode</option>
+              <option value="cash">Cash</option>
+              <option value="debit">Debit</option>
+            </Field> -->
             <ErrorMessage name="metode_pembayaran" class="text-danger small" />
           </div>
         </div>
 
         <!-- Submit -->
-        <div class="card-footer">
-          <button type="submit" class="btn btn-primary w-100">Simpan Transaksi</button>
+        <div class="card-footer d-flex justify-content-between gap-2">
+          <button type="button" class="btn btn-secondary w-50" @click="batal">Batal</button>
+          <button type="submit" class="btn btn-primary w-50">Simpan Transaksi</button>
         </div>
+        <!-- <div class="card-footer">
+          <button type="submit" class="btn btn-primary w-100">Simpan Transaksi</button>
+        </div> -->
       </VForm>
     </div>
   </div>

@@ -33,8 +33,8 @@ class BarangController extends Controller
                 $query->where('barang.nama_barang', 'like', "%$search%")
                     ->orWhere('kategori.nama', 'like', "%$search%")
                     ->orWhere('harga_barang', 'like', "%$search%")
-                    ->orWhere('stok_barang', 'like', "%$search%")
-                    ->orWhere('foto_barang', 'like', "%$search%");
+                    ->orWhere('stok_barang', 'like', "%$search%");
+                    // ->orWhere('foto_barang', 'like', "%$search%");
             })->select('barang.*', 'kategori.nama as kategori')->latest()->paginate($per);
             // })->latest()->paginate($per, ['*', DB::raw('@no := @no + 1 AS no')]);
 

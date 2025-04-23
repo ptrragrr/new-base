@@ -30,7 +30,7 @@ class KategoriController extends Controller
         DB::statement('set @no=0+' . $page * $per);
         $data = Kategori::
             when($request->search, function ($query, $search) {
-                $query->where('kategori_barang', 'like', "%$search%");
+                $query->where('nama', 'like', "%$search%");
             })->latest()->paginate($per);
             // })->latest()->paginate($per, ['*', DB::raw('@no := @no + 1 AS no')]);
 
@@ -87,7 +87,7 @@ public function destroy(Kategori $kategori)
 {
     return response()->json([
         'kategori' => [
-            'kategori_barang' => $kategori->kategori_barang,
+            'nama' => $kategori->nama,
         ]
     ]);
 }
