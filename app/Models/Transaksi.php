@@ -11,9 +11,9 @@ class Transaksi extends Model
     protected $fillable = [
         'nama_kasir',
         'jumlah',
+        'metode_pembayaran',
         'total_harga',
         'kode_transaksi',
-        'tanggal',
     ];
 
 }

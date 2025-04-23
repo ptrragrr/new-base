@@ -6,6 +6,7 @@ use App\Models\History;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class HistoryController extends Controller

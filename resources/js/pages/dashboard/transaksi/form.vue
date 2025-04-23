@@ -148,7 +148,7 @@ function removeProduct(index: number) {
 function batal() {
   formRef.value?.resetForm();
   transaksis.value = {
-    nama_kasir: "",
+    nama_kasir: "", 
     id_barang: null,
     jumlah: 1,
     total_harga: 0,
@@ -160,40 +160,74 @@ function batal() {
 function submit(values: any, { resetForm }: any) {
   const formData = new FormData();
 
-  formData.append("nama_kasir", values.nama_kasir); // dari Field
-  formData.append("metode_pembayaran", values.metode_pembayaran); // dari Field
-  formData.append("keranjang", JSON.stringify(transaksis.value.keranjang)); // ⬅️ masih dari transaksis
+  formData.append("nama_kasir", values.nama_kasir);
+  formData.append("metode_pembayaran", values.metode_pembayaran);
+  formData.append("keranjang", JSON.stringify(transaksis.value.keranjang));
   formData.append("total", grandTotal.value.toString());
 
-  console.log("Submit metode:", values.metode_pembayaran); // debug
+  console.log("Submit metode:", values.metode_pembayaran);
 
-  if (formRef.value instanceof HTMLElement) {
-  block(formRef.value);
-} else {
-  console.warn("formRef.value is not an HTMLElement", formRef.value);
+  block(formRef.value?.$el); // ✅ Fix di sini
+
+  axios
+    .post("/transaksi/store", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then(() => {
+      emit("close");
+      emit("refresh");
+      toast.success("Transaksi berhasil disimpan");
+      resetForm();
+      transaksis.value.keranjang = [];
+    })
+    .catch((err: any) => {
+      toast.error(err.response?.data?.message || "Terjadi kesalahan.");
+    })
+    .finally(() => {
+      unblock(formRef.value?.$el); // ✅ Fix di sini
+    });
 }
 
-  // block(formRef.value);
+// function submit(values: any, { resetForm }: any) {
+//   const formData = new FormData();
 
-  axios.post("/transaksi/store", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  })
-  .then(() => {
-    emit("close");
-    emit("refresh");
-    toast.success("Transaksi berhasil disimpan");
-    resetForm();
-    transaksis.value.keranjang = [];
-  })
-  .catch((err: any) => {
-    toast.error(err.response?.data?.message || "Terjadi kesalahan.");
-  })
-  .finally(() => {
-    unblock(formRef.value);
-  });
-}
+//   formData.append("nama_kasir", values.nama_kasir); // dari Field
+//   formData.append("tanggal_transaksi", values.tanggal_transaksi);
+//   formData.append("metode_pembayaran", values.metode_pembayaran); // dari Field
+//   formData.append("keranjang", JSON.stringify(transaksis.value.keranjang)); // ⬅️ masih dari transaksis
+//   formData.append("total", grandTotal.value.toString());
+
+//   console.log("Submit metode:", values.metode_pembayaran); // debug
+
+//   if (formRef.value instanceof HTMLElement) {
+//   block(formRef.value);
+// } else {
+//   console.warn("formRef.value is not an HTMLElement", formRef.value);
+// }
+
+//   // block(formRef.value);
+
+//   axios.post("/transaksi/store", formData, {
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//     },
+//   })
+//   .then(() => {
+//     emit("close");
+//     emit("refresh");
+//     toast.success("Transaksi berhasil disimpan");
+//     resetForm();
+//     transaksis.value.keranjang = [];
+//   })
+//   .catch((err: any) => {
+//     toast.error(err.response?.data?.message || "Terjadi kesalahan.");
+//   })
+//   .finally(() => {
+//     unblock(formRef.value);
+//   });
+// }
 
 // function submit(values: any, { resetForm }: any) {
 //   const formData = new FormData();
@@ -241,9 +275,17 @@ function submit(values: any, { resetForm }: any) {
             <label class="form-label">Barang</label>
             <select class="form-select" v-model.number="transaksis.id_barang">
               <option disabled value="">Pilih barang</option>
+              <!-- <option
+              v-for="item in barangs"
+              :key="item.id"
+              :value="Number(item.id)"
+              :disabled="item.stok_barang === 0"
+              >
+              {{ item.nama_barang }} (Stok: {{ item.stok_barang === 0 ? 'Habis' : item.stok_barang }})
+            </option> -->
               <option v-for="item in barangs" :key="item.id" :value="Number(item.id)">
                 {{ item.text }}
-              </option>
+              </option> 
             </select>
             <ErrorMessage name="id_barang" class="text-danger small" />
             <ErrorMessage name="metode_pembayaran" class="text-danger small" />

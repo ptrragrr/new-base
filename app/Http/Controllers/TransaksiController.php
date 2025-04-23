@@ -21,6 +21,7 @@ class TransaksiController extends Controller
     
     public function get(Request $request)
     {
+        $barang = Barang::where('stok_barang', '>', 0)->get();
         return response()->json([
             'success' => true,
             'data' => Barang::all()
@@ -59,8 +60,8 @@ public function show($id)
         'detail' => $transaksi->detail,
     ]);
 }
-    
-    public function store(Request $request)
+
+public function store(Request $request)
 {
     $validated = $request->validate([
         'nama_kasir' => 'required|string',
@@ -80,7 +81,6 @@ public function show($id)
     
     DB::beginTransaction();
     try {
-
         $transaksiKode = 'PTR-' . strtoupper(Str::random(8));
 
         $transaksi = Transaksi::create([
@@ -90,9 +90,20 @@ public function show($id)
             'total' => $validated['total'],
         ]);
 
-        Log::info($transaksi->id);    
         foreach ($keranjang as $item) {
-            Log::info($item);
+            $barang = Barang::find($item['id_barang']);
+            if (!$barang) {
+                throw new \Exception("Barang dengan ID {$item['id_barang']} tidak ditemukan.");
+            }
+
+            if ($barang->stok_barang < $item['jumlah']) {
+                throw new \Exception("Stok barang '{$barang->nama_barang}' tidak mencukupi. Tersedia: {$barang->stok_barang}, diminta: {$item['jumlah']}");
+            }
+
+            // Kurangi stok
+            $barang->stok_barang -= $item['jumlah'];
+            $barang->save();
+
             DetailTransaksi::create([
                 'id_transaksi' => $transaksi->id,
                 'id_barang' => $item['id_barang'],
@@ -106,7 +117,7 @@ public function show($id)
 
         return response()->json([
             'success' => true,
-            'message' => 'Transaksi berhasil disimpan'
+            'message' => 'Transaksi berhasil disimpan dan stok diperbarui'
         ]);
     } catch (\Exception $e) {
         DB::rollBack();

@@ -36,6 +36,14 @@ const columns = [
       ),
   }),
 ];
+
+function formatTanggal(tanggal: string) {
+  const options: Intl.DateTimeFormatOptions = {
+    day: '2-digit', month: 'long', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  };
+  return new Date(tanggal).toLocaleDateString('id-ID', options);
+}
 </script>
 
 <template>
@@ -59,6 +67,7 @@ const columns = [
         <h3 class="text-lg font-bold mb-2">Detail Transaksi</h3>
         <p><strong>Kode Transaksi:</strong> {{ selectedTransaksi.kode_transaksi }}</p>
         <p><strong>Nama Kasir:</strong> {{ selectedTransaksi.nama_kasir }}</p>
+        <p><strong>Tanggal Transaksi:</strong> {{ formatTanggal(selectedTransaksi.created_at) }}</p>
 
         <table class="w-full mt-4 text-sm border">
           <thead class="bg-gray-200 text-left">
