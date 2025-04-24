@@ -61,12 +61,12 @@ class KategoriController extends Controller
     $validatedData = $request->validated();
 
     $kategori->update([
-        'kategori_barang' => $validatedData['kategori_barang'],
+        'nama' => $validatedData['nama'],
     ]);
 
     return response()->json([
         'success' => true,
-        'kategori' => $kategori,
+        'kategori' => $kategori
     ]);
 }
 

@@ -47,10 +47,17 @@ function formatTanggal(tanggal: string) {
 </script>
 
 <template>
-  <div class="card">
-    <div class="card-header align-items-center">
-      <h2 class="mb-0">Riwayat Transaksi Pembayaran</h2>
-    </div>
+ <div class="card">
+  <div class="card-header align-items-center">
+    <h2 class="text-lg font-bold">Riwayat Transaksi Pembayaran</h2>
+    <a
+      href="/transaksi/download-pdf"
+      target="_blank"
+      class="flex items-center gap-2 bg-blue-600 text-lg font-bold px-4 py-2 rounded hover:bg-blue-700"
+    >
+      🗎 CETAK LAPORAN
+    </a>
+  </div>
     <div class="card-body">
       <paginate
         ref="paginateRef"

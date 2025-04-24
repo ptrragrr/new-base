@@ -32,10 +32,18 @@ const barang = useBarang();
 
 const barangs = computed(() =>
   barang.data.value?.map((item: Barang) => ({
-    id: String(item.id),
+    id: item.id,
     text: item.nama_barang,
+    stok: item.stok_barang, // tambahkan stok
   }))
 );
+
+// const barangs = computed(() =>
+//   barang.data.value?.map((item: Barang) => ({
+//     id: String(item.id),
+//     text: item.nama_barang,
+//   }))
+// );
 
 const selectedBarangHarga = computed(() => {
   const selected = barang.data.value?.find(
@@ -275,18 +283,16 @@ function submit(values: any, { resetForm }: any) {
             <label class="form-label">Barang</label>
             <select class="form-select" v-model.number="transaksis.id_barang">
               <option disabled value="">Pilih barang</option>
-              <!-- <option
+              <option
               v-for="item in barangs"
               :key="item.id"
-              :value="Number(item.id)"
-              :disabled="item.stok_barang === 0"
+              :value="item.id"
+              :disabled="item.stok === 0"
+              :style="item.stok === 0 ? 'color: gray; background-color: #f8f9fa;' : ''"
               >
-              {{ item.nama_barang }} (Stok: {{ item.stok_barang === 0 ? 'Habis' : item.stok_barang }})
-            </option> -->
-              <option v-for="item in barangs" :key="item.id" :value="Number(item.id)">
-                {{ item.text }}
-              </option> 
-            </select>
+              {{ item.text }} ({{ item.stok === 0 ? 'Stok habis' : 'Stok: ' + item.stok }})
+            </option>
+          </select>
             <ErrorMessage name="id_barang" class="text-danger small" />
             <ErrorMessage name="metode_pembayaran" class="text-danger small" />
             <ErrorMessage name="keranjang" class="text-danger small" />

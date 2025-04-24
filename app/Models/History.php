@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class History extends Model
 {
-    use HasFactory;
+    use HasFactory;    
 
     public function transaksi()
     {

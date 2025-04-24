@@ -27,18 +27,73 @@
     </style>
 </head>
 <body>
-
     <h1>Laporan Transaksi Penjualan</h1>
     <div class="info">
         Dicetak: {{ \Carbon\Carbon::now()->format('d M Y, H:i') }}
     </div>
 
-    <table>
+    <!-- Di atas tabel -->
+    @if (!request()->is('transaksi/download-pdf'))
+    <div class="card-header align-items-center">
+    <a
+      href="/transaksi/download-pdf"
+      target="_blank"
+      class="flex items-center gap-2 bg-blue-600 text-lg font-bold px-4 py-2 rounded hover:bg-blue-700"
+    >
+      🗎 CETAK LAPORAN
+    </a>
+  </div>
+  @endif
+    <table border="1" cellspacing="0" cellpadding="5">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Kode Transaksi</th>
+            <th>Nama Kasir</th>
+            <th>Nama Barang</th>
+            <th>Tanggal</th>
+            <th>Metode Pembayaran</th>
+            <th>Total Transaksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @php $total = 0; @endphp
+        @foreach($data as $i => $item)
+            <tr>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $item->kode_transaksi }}</td>
+                <td>{{ $item->nama_kasir }}</td>
+                <td>
+                    @if($item->details)
+                        <ul style="margin:0; padding-left:15px;">
+                            @foreach($item->details as $d)
+                                <li>{{ $d->barang->nama_barang ?? '-' }}</li>
+                            @endforeach
+                        </ul>
+                    @else
+                        -
+                    @endif
+                </td>
+                <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                <td>{{ $item->metode_pembayaran }}</td>
+                <td>Rp {{ number_format($item->total_transaksi, 0, ',', '.') }}</td>
+            </tr>
+            @php $total += $item->total_transaksi; @endphp
+        @endforeach
+        <tr>
+            <td colspan="6" align="right"><strong>Total Keseluruhan</strong></td>
+            <td><strong>Rp {{ number_format($total, 0, ',', '.') }}</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+    <!-- <table>
         <thead>
             <tr>
                 <th>No</th>
                 <th>Kode Transaksi</th>
                 <th>Nama Kasir</th>
+                <th>Nama Barang</th>
                 <th>Tanggal</th>
                 <th>Metode Pembayaran</th>
                 <th>Total Transaksi</th>
@@ -51,6 +106,7 @@
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->kode_transaksi }}</td>
                     <td>{{ $item->nama_kasir }}</td>
+                    <td>{{ $item->barang->nama_barang ?? '-' }}</td>
                     <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i') }}</td>
                     <td>{{ ucfirst($item->metode_pembayaran) }}</td>
                     <td>Rp {{ number_format($item->total_transaksi, 0, ',', '.') }}</td>
@@ -62,7 +118,7 @@
                 <td class="total">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
             </tr>
         </tbody>
-    </table>
+    </table> -->
 
 </body>
 </html>

@@ -57,11 +57,43 @@ class HistoryController extends Controller
 
 public function preview_pdf()
 {
-    $data = Transaksi::with(['kasir', 'details'])->orderBy('created_at', 'desc')->get();
+    $data = Transaksi::join('user','kasir.')->orderBy('created_at', 'desc')->get();
+
+    // $data = Transaksi::with(['kasir', 'details'])->orderBy('created_at', 'desc')->get();
 
     Log::info($data);
     return view('pdf', compact('data'));
 }
+
+public function download_pdf()
+{
+    $data = Transaksi::with(['kasir', 'details.barang']) // pakai relasi, bukan field
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    $html = View::make('pdf', compact('data'))->render();
+
+    $mpdf = new \Mpdf\Mpdf(['format' => 'A4']);
+    $mpdf->WriteHTML($html);
+
+    return response($mpdf->Output('laporan-transaksi.pdf', 'D'), 200)
+        ->header('Content-Type', 'application/pdf');
+}
+
+// public function download_pdf()
+// {
+//     $data = Transaksi::with(['kasir', 'details.barang']) // pastikan relasi benar
+//         ->orderBy('created_at', 'desc')
+//         ->get();
+
+//     $html = View::make('pdf', compact('data'))->render();
+
+//     $mpdf = new \Mpdf\Mpdf(['format' => 'A4']);
+//     $mpdf->WriteHTML($html);
+
+//     return response($mpdf->Output('laporan-transaksi.pdf', 'D'), 200)
+//         ->header('Content-Type', 'application/pdf');
+// }
 
     public function store(Request $request)
     {

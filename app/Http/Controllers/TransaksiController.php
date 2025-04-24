@@ -34,7 +34,7 @@ class TransaksiController extends Controller
 
 public function detail($id)
 {
-    $transaksi = Transaksi::with(['detail.barang'])->find($id);
+    $transaksi = Transaksi::with(['details.barang'])->find($id);
 
     if (!$transaksi) {
         return response()->json(['success' => false, 'message' => 'Transaksi tidak ditemukan'], 404);
@@ -52,9 +52,17 @@ public function detail($id)
     return response()->json($detail);
 }
 
+public function create()
+{
+    $barangs = Barang::where('stok', '>', 0)->get(); // hanya barang dengan stok > 0
+    $kasir = Auth::user(); // contoh jika kasir login
+
+    return view('pembayaran.create', compact('barangs', 'kasir'));
+}
+
 public function show($id)
 {
-    $transaksi = Transaksi::with(['detail.barang'])->findOrFail($id);
+    $transaksi = Transaksi::with(['details.barang'])->findOrFail($id);
 
     return response()->json([
         'detail' => $transaksi->detail,

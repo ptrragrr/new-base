@@ -62,8 +62,9 @@ Route::prefix('tambah')->group(function () {
     Route::middleware('can:tambah-kategori')->group(function () {
         Route::get('kategori', [KategoriController::class, 'get']);
         Route::post('kategori', [KategoriController::class, 'index']);
+        // Route::put('/kategori/{kategori}', [KategoriController::class, 'update']);
         Route::post('kategori/store', [KategoriController::class, 'store']);
-        Route::apiResource('tambah/kategori', KategoriController::class);
+        // Route::apiResource('tambah/kategori', KategoriController::class);
         Route::apiResource('kategori', KategoriController::class)
         ->except(['index', 'store']);
     });  

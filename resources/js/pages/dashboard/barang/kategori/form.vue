@@ -48,7 +48,7 @@ function getEdit() {
 
 function submit() {
     const formData = new FormData();
-    formData.append("kategori_barang", kategori.value.nama);
+    formData.append("nama", kategori.value.nama);
     // formData.append("kategori_barang", barang.value.kategori_barang);
     // formData.append("harga_barang", barang.value.harga_barang);
     // formData.append("stok_barang", barang.value.stok_barang);
@@ -148,7 +148,7 @@ watch(
                         />
                         <div class="fv-plugins-message-container">
                             <div class="fv-help-block">
-                                <ErrorMessage name="kategori_barang" />
+                                <ErrorMessage name="nama" />
                             </div>
                         </div>
                     </div>
