@@ -52,6 +52,8 @@ public function detail($id)
     return response()->json($detail);
 }
 
+
+
 public function create()
 {
     $barangs = Barang::where('stok', '>', 0)->get(); // hanya barang dengan stok > 0
@@ -69,6 +71,8 @@ public function show($id)
     ]);
 }
 
+
+
 public function store(Request $request)
 {
     $validated = $request->validate([
@@ -76,6 +80,8 @@ public function store(Request $request)
         'metode_pembayaran' => 'required|string',
         'keranjang' => 'required|string',
         'total' => 'required|numeric',
+        'kembalian' => 'required|numeric',
+        'bayar' => 'nullable|numeric',
     ]);
 
     $keranjang = json_decode($validated['keranjang'], true);
@@ -96,6 +102,8 @@ public function store(Request $request)
             'nama_kasir' => $validated['nama_kasir'],
             'metode_pembayaran' => $validated['metode_pembayaran'],
             'total_transaksi' => $validated['total'],
+            'bayar' => $validated['bayar'],
+            'kembalian' => $validated['kembalian'],
         ]);
 
         foreach ($keranjang as $item) {

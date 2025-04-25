@@ -47,7 +47,7 @@ class KategoriController extends Controller
     {
         $validatedData = $request->validated();
         $Kategori = Kategori::create([
-            'nama' => $validatedData['kategori_barang'],
+            'nama' => $validatedData['nama'],
         ]);
 
         return response()->json([

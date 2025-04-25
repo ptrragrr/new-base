@@ -99,6 +99,7 @@ Route::middleware('can:pembayaran')->group(function () {
     Route::put('transaksi/{id}', [TransaksiController::class, 'update']);
     // Rute hapus transaksi
     Route::delete('transaksi/{id}', [TransaksiController::class, 'destroy']);
+    Route::get('/struk/{id}', [PembayaranController::class, 'cetakStruk'])->name('struk.show');
 });
 
 // Route::middleware(['auth:sanctum', 'verified', 'json'])

@@ -92,7 +92,8 @@ public function download_pdf()
 //     $mpdf->WriteHTML($html);
 
 //     return response($mpdf->Output('laporan-transaksi.pdf', 'D'), 200)
-//         ->header('Content-Type', 'application/pdf');
+//   
+//       ->header('Content-Type', 'application/pdf');
 // }
 
     public function store(Request $request)

@@ -17,12 +17,15 @@ const props = defineProps({
 
 const emit = defineEmits(["close", "refresh"]);
 const grandTotalValue = computed(() => grandTotal.value);
+const selectedMetode = computed(() => formRef.value?.values?.metode_pembayaran || "");
+
 
 const transaksis = ref({
   nama_kasir: "",
   id_barang: null,
   jumlah: 1,
   total_harga: 0,
+  bayar: 0,
   // metode_pembayaran: "",
   keranjang: [] as any[],
 });
@@ -61,6 +64,12 @@ const grandTotal = computed(() =>
 
 watch(grandTotal, (newTotal) => {
   console.log("Total:", formatRupiah(newTotal));
+});
+
+const kembalian = computed(() => {
+  if (selectedMetode.value !== "cash") return 0;
+  const kembali = transaksis.value.bayar - grandTotal.value;
+  return kembali > 0 ? kembali : 0;
 });
 
 const formSchema = yup.object({
@@ -160,6 +169,7 @@ function batal() {
     id_barang: null,
     jumlah: 1,
     total_harga: 0,
+    bayar: 0,
     keranjang: [],
   };
   emit("close");
@@ -172,6 +182,8 @@ function submit(values: any, { resetForm }: any) {
   formData.append("metode_pembayaran", values.metode_pembayaran);
   formData.append("keranjang", JSON.stringify(transaksis.value.keranjang));
   formData.append("total", grandTotal.value.toString());
+  formData.append("bayar", transaksis.value.bayar.toString());
+  formData.append("kembalian", kembalian.value.toString());
 
   console.log("Submit metode:", values.metode_pembayaran);
 
@@ -340,6 +352,19 @@ function submit(values: any, { resetForm }: any) {
             <label class="form-label">Total Semua Barang:</label>
             <p class="fw-bold">{{ formatRupiah(grandTotalValue) }}</p>
           </div>
+
+          <div class="mb-3" v-if="selectedMetode === 'cash'">
+  <label class="form-label">Bayar</label>
+  <input type="number" class="form-control" v-model.number="transaksis.bayar" min="0" />
+</div>
+
+<!-- Kembalian -->
+<div class="mb-3" v-if="selectedMetode === 'cash'">
+  <label class="form-label">Kembalian</label>
+  <p :class="{ 'text-danger': kembalian < 0, 'fw-bold': true }">
+    {{ formatRupiah(kembalian) }}
+  </p>
+</div>
 
           <!-- Metode Pembayaran -->
           <div class="mb-3">
