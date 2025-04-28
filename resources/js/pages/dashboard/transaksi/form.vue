@@ -7,7 +7,10 @@ import { block, unblock } from "@/libs/utils";
 import { useBarang } from "@/services/useBarang";
 import type { Barang } from "@/types";
 import { Form as VForm, Field, ErrorMessage } from "vee-validate";
+import { useRouter } from "vue-router";
 
+
+const router = useRouter();
 const props = defineProps({
   selectedBarang: {
     type: Array,
@@ -26,7 +29,7 @@ const transaksis = ref({
   jumlah: 1,
   total_harga: 0,
   bayar: 0,
-  // metode_pembayaran: "",
+  metode_pembayaran: "",
   keranjang: [] as any[],
 });
 
@@ -108,6 +111,20 @@ function adjustQuantity(index: number, amount: number) {
 
   item.jumlah = Math.max(1, item.jumlah + amount);
   item.total_harga = item.harga_barang * item.jumlah;
+}
+
+function goToStruk() {
+  router.push({
+    name: "struk",
+    query: {
+      nama_kasir: transaksis.value.nama_kasir,
+      metode_pembayaran: transaksis.value.metode_pembayaran,
+      total_harga: grandTotal.value,
+      bayar: transaksis.value.bayar,
+      kembalian: kembalian.value,
+      detail_produk: JSON.stringify(transaksis.value.keranjang),
+    },
+  })
 }
 
 function tambahKeKeranjang() {
@@ -196,9 +213,8 @@ function submit(values: any, { resetForm }: any) {
       },
     })
     .then(() => {
-      emit("close");
-      emit("refresh");
       toast.success("Transaksi berhasil disimpan");
+      goToStruk();
       resetForm();
       transaksis.value.keranjang = [];
     })
@@ -278,7 +294,7 @@ function submit(values: any, { resetForm }: any) {
 </script>
 
 <template>
-  <div class="row">
+   <div class="container py-4">
     <div class="col-md-12 mx-auto"> <!-- Tambahkan ini -->
       <div class="ringkasan-wrapper">
         <VForm @submit="submit" :validation-schema="formSchema" ref="formRef" id="form-transaksi">
@@ -369,11 +385,17 @@ function submit(values: any, { resetForm }: any) {
           <!-- Metode Pembayaran -->
           <div class="mb-3">
             <label class="form-label">Metode Pembayaran</label>
-            <Field as="select" name="metode_pembayaran" class="form-control">
-              <option disabled value="">Pilih metode</option>
-              <option value="cash">Cash</option>
-              <option value="debit">Debit</option>
-            </Field>
+            <Field
+  as="select"
+  name="metode_pembayaran"
+  v-model="transaksis.metode_pembayaran"
+  class="form-control"
+>
+  <option disabled value="">Pilih metode</option>
+  <option value="cash">Cash</option>
+  <option value="debit">Debit</option>
+</Field>
+
             <!-- <Field as="select" name="metode_pembayaran" class="form-control">
               <option disabled value="">Pilih metode</option>
               <option value="cash">Cash</option>
@@ -397,9 +419,26 @@ function submit(values: any, { resetForm }: any) {
 </div>
 </template>
 
-<style>
+<style scoped>
+html, body, #app {
+  height: 100%;
+  margin: 0;
+}
+
+.container-fluid {
+  padding: 0;
+}
+
 .ringkasan-wrapper {
   width: 100%;
-  max-width: 100%;
+  height: 100%;
+}
+
+.card-body {
+  overflow-y: auto;
+}
+
+.card-footer {
+  background: white;
 }
 </style>

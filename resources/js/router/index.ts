@@ -108,6 +108,28 @@ const routes: Array<RouteRecordRaw> = [
             },
 
             {
+                path: "/dashboard/struk",
+                name: "struk",
+                component: () =>
+                    import("@/pages/dashboard/transaksi/struk.vue"),
+                meta: {
+                    pageTitle: "Struk",
+                    breadcrumbs: ["Struk"],
+                },
+            },
+
+            {
+                path: "/dashboard/pembayaran",
+                name: "dashboard.transaksi",
+                component: () =>
+                    import("@/pages/dashboard/transaksi/index.vue"),
+                meta: {
+                    pageTitle: "Pembayaran",
+                    breadcrumbs: ["Pembayaran"],
+                },
+            },
+
+            {
                 path: "/dashboard/history",
                 name: "dashboard.history",
                 component: () =>

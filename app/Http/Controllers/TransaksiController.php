@@ -71,7 +71,13 @@ public function show($id)
     ]);
 }
 
-
+public function cetakStruk($id)
+{
+    // Logika untuk mengambil dan mencetak struk berdasarkan ID
+    // Contoh: ambil data transaksi dari database dan kirim ke view
+    $transaksi = Transaksi::find($id);
+    return view('struk', compact('transaksi'));
+}
 
 public function store(Request $request)
 {

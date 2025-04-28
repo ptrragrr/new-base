@@ -23,7 +23,7 @@ use App\Http\Controllers\HistoryController;
 // Route::get('history/view/pdf', [HistoryController::class, 'view_pdf']);
 Route::get('/transaksi/preview', [HistoryController::class, 'preview_pdf']);
 Route::get('/transaksi/download-pdf', [HistoryController::class, 'download_pdf']);
-Route::get('/transaksi/cetak_struck', [HistoryController::class, 'cetak_struck']);
+// Route::get('/transaksi/cetak_struck', [HistoryController::class, 'cetak_struk']);
 
 Route::get('/{any}', function () {
     return view('app');
