@@ -123,6 +123,7 @@ function goToStruk() {
       bayar: transaksis.value.bayar,
       kembalian: kembalian.value,
       detail_produk: JSON.stringify(transaksis.value.keranjang),
+      tanggal: new Date().toLocaleString("id-ID")
     },
   })
 }
@@ -307,7 +308,26 @@ function submit(values: any, { resetForm }: any) {
           </div>
 
           <!-- Dropdown Barang -->
-          <div class="mb-3">
+           <!-- Dropdown Barang -->
+<div class="mb-3">
+  <label class="form-label">Barang</label>
+  <select class="form-select" v-model.number="transaksis.id_barang">
+    <option disabled value="">Pilih barang</option>
+    <option
+      v-for="item in barangs"
+      :key="item.id"
+      :value="item.id"
+      :disabled="item.stok === 0"
+      :style="item.stok === 0 ? 'color: gray; background-color: #f8f9fa;' : ''"
+    >
+      {{ item.text }} - 
+      {{ item.stok === 0 ? 'Stok habis' : 'Stok: ' + item.stok }}
+    </option>
+  </select>
+  <ErrorMessage name="id_barang" class="text-danger small" />
+</div>
+
+          <!-- <div class="mb-3">
             <label class="form-label">Barang</label>
             <select class="form-select" v-model.number="transaksis.id_barang">
               <option disabled value="">Pilih barang</option>
@@ -324,7 +344,7 @@ function submit(values: any, { resetForm }: any) {
             <ErrorMessage name="id_barang" class="text-danger small" />
             <ErrorMessage name="metode_pembayaran" class="text-danger small" />
             <ErrorMessage name="keranjang" class="text-danger small" />
-          </div>
+          </div> -->
 
           <!-- Jumlah dan Total -->
           <div v-if="transaksis.id_barang" class="mb-3">
