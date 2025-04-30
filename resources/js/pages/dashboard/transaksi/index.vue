@@ -46,7 +46,7 @@ const loadBarang = () => {
       </div>
     </div> -->
 
-    <div class="col-lg-4">
+    <div class="container-fluid px-0">
       <FormTransaksi :selectedBarang="selectedBarang" @refresh="loadBarang" />
     </div>
   <!-- </div> -->

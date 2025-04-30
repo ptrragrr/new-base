@@ -39,20 +39,27 @@ onMounted(() => {
 <template>
   <div class="container py-4">
     <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div class="card-header d-flex justify-content-between align-items-center no-print">
         <h2 class="text-lg font-bold mb-0">Struk Transaksi</h2>
         <button @click="printStruk" class="btn btn-primary">Print Struk</button>
       </div>
 
       <div class="card-body" v-if="transaksi">
         <div class="print-area">
+          <h4 class="text-center">INDOKU GROCERY</h4>
+          <p class="text-center">
+            Jl. MANUKAN No. 123<br />
+            Telp: 0812-3456-7890
+          </p>
+          <hr />
+
           <p><strong>Nama Kasir:</strong> {{ transaksi.nama_kasir }}</p>
-          <p><strong>Tanggal Transaksi:</strong> {{ transaksi.tanggal }}</p>
-          <p><strong>Metode Pembayaran:</strong> {{ transaksi.metode_pembayaran || 'Tidak ada' }}</p>
+          <p><strong>Tanggal:</strong> {{ transaksi.tanggal }}</p>
+          <p><strong>Metode Pembayaran:</strong> {{ transaksi.metode_pembayaran }}</p>
 
           <hr />
           <h5>Daftar Barang</h5>
-          <div v-for="(item, index) in transaksi.detail_produk" :key="index" class="border-bottom py-2">
+          <div v-for="(item, index) in transaksi.detail_produk" :key="index" class="py-1 border-bottom">
             <div class="d-flex justify-content-between">
               <div>
                 {{ item.nama_barang }}<br />
@@ -66,6 +73,9 @@ onMounted(() => {
           <p><strong>Total Harga:</strong> {{ formatRupiah(transaksi.total_harga) }}</p>
           <p><strong>Bayar:</strong> {{ formatRupiah(transaksi.bayar) }}</p>
           <p><strong>Kembalian:</strong> {{ formatRupiah(transaksi.kembalian) }}</p>
+
+          <hr />
+          <p class="text-center">--- Terima Kasih ---</p>
         </div>
       </div>
 
@@ -77,29 +87,49 @@ onMounted(() => {
 </template>
 
 <style>
+.print-area {
+  font-family: monospace;
+  font-size: 12px;
+  width: 80mm;
+  padding: 10px;
+  margin: 0 auto; /* Ini memastikan struk berada di tengah */
+  background: white;
+  color: black;
+}
+
 @media print {
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
   body * {
     visibility: hidden;
   }
 
-  .print-area, .print-area * {
+  .print-area,
+  .print-area * {
     visibility: visible;
   }
 
   .print-area {
     position: absolute;
-    left: 0;
+    left: 50%;
     top: 0;
-    width: 100%;
+    transform: translateX(-50%);
   }
 
-  /* Sembunyikan tombol print saat cetak */
-  .btn {
-    display: none !important;
-  }
-
-  /* Hilangkan header/sidebar dari layout utama jika perlu */
-  .sidebar, .navbar, .footer {
+  .sidebar,
+  .navbar,
+  .footer,
+  .btn,
+  .no-print {
     display: none !important;
   }
 }

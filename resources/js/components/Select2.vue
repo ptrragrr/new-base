@@ -96,6 +96,7 @@ export default {
         },
     },
     mounted() {
+        console.log(this.options)
         this.select2 = $(this.$el)
             .find("select")
             .select2({

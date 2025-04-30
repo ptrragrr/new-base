@@ -40,7 +40,8 @@ const barangs = computed(() =>
   barang.data.value?.map((item: Barang) => ({
     id: item.id,
     text: item.nama_barang,
-    stok: item.stok_barang, // tambahkan stok
+    stok: item.stok_barang,
+    harga_barang:item.harga_barang // tambahkan stok
   }))
 );
 
@@ -52,7 +53,7 @@ const barangs = computed(() =>
 // );
 
 const selectedBarangHarga = computed(() => {
-  const selected = barang.data.value?.find(
+  const selected = barang.data.value.find(
     (b) => b.id === transaksis.value.id_barang
   );
   return selected?.harga_barang || 0;
@@ -93,14 +94,17 @@ const formSchema = yup.object({
 watch(
   [() => transaksis.value.id_barang, () => transaksis.value.jumlah],
   () => {
+    console.log(transaksis.value.id_barang)
+    console.log(barang.data.value)
     const selected = barang.data.value?.find(
-      (b) => b.id === transaksis.value.id_barang
+      (b) => b.id == transaksis.value.id_barang
     );
+    console.log(selected)
     if (selected) {
       transaksis.value.total_harga =
         selected.harga_barang * transaksis.value.jumlah;
     } else {
-      transaksis.value.total_harga = 0;
+      transaksis.value.total_harga = 1;
     }
   }
 );
@@ -130,7 +134,7 @@ function goToStruk() {
 
 function tambahKeKeranjang() {
   const selected = barang.data.value?.find(
-    (b) => b.id === transaksis.value.id_barang
+    (b) => b.id == transaksis.value.id_barang
   );
   if (!selected) return;
 
@@ -309,23 +313,24 @@ function submit(values: any, { resetForm }: any) {
 
           <!-- Dropdown Barang -->
            <!-- Dropdown Barang -->
-<div class="mb-3">
-  <label class="form-label">Barang</label>
-  <select class="form-select" v-model.number="transaksis.id_barang">
-    <option disabled value="">Pilih barang</option>
-    <option
-      v-for="item in barangs"
-      :key="item.id"
-      :value="item.id"
-      :disabled="item.stok === 0"
-      :style="item.stok === 0 ? 'color: gray; background-color: #f8f9fa;' : ''"
-    >
-      {{ item.text }} - 
-      {{ item.stok === 0 ? 'Stok habis' : 'Stok: ' + item.stok }}
-    </option>
-  </select>
-  <ErrorMessage name="id_barang" class="text-danger small" />
-</div>
+          <div class="mb-3">
+            <label class="form-label">Barang</label>
+            <Field
+              name="id"
+              type="hidden"
+              v-model="transaksis.id_barang"
+          >
+              <select2
+                  placeholder="Pilih Barang"
+                  class="form-select-solid"
+                  :options="barangs"
+                  name="id"
+                  v-model="transaksis.id_barang"
+              >
+              </select2>
+          </Field>
+            <ErrorMessage name="id_barang" class="text-danger small" />
+          </div>
 
           <!-- <div class="mb-3">
             <label class="form-label">Barang</label>
