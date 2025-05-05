@@ -109,13 +109,29 @@ watch(
   }
 );
 
-function adjustQuantity(index: number, amount: number) {
+function adjustQuantity(index: number, delta: number) {
   const item = transaksis.value.keranjang[index];
-  if (!item) return;
+  const newJumlah = item.jumlah + delta;
 
-  item.jumlah = Math.max(1, item.jumlah + amount);
-  item.total_harga = item.harga_barang * item.jumlah;
+  if (delta > 0 && newJumlah > item.stok_barang) {
+    toast.error("Stok barang tidak mencukupi.");
+    return;
+  }
+
+  if (newJumlah <= 0) {
+    transaksis.value.keranjang.splice(index, 1);
+  } else {
+    item.jumlah = newJumlah;
+    item.total_harga = item.harga_barang * item.jumlah;
+  }
 }
+// function adjustQuantity(index: number, amount: number) {
+//   const item = transaksis.value.keranjang[index];
+//   if (!item) return;
+
+//   item.jumlah = Math.max(1, item.jumlah + amount);
+//   item.total_harga = item.harga_barang * item.jumlah;
+// }
 
 function goToStruk() {
   router.push({
@@ -142,6 +158,13 @@ function tambahKeKeranjang() {
     (item: any) => item.id_barang === selected.id
   );
 
+  const totalJumlah = (existingItem?.jumlah || 0) + transaksis.value.jumlah;
+
+  if (totalJumlah > selected.stok_barang) {
+    toast.error("Jumlah melebihi stok yang tersedia.");
+    return;
+  }
+
   if (existingItem) {
     existingItem.jumlah += transaksis.value.jumlah;
     existingItem.total_harga =
@@ -153,6 +176,7 @@ function tambahKeKeranjang() {
       harga_barang: selected.harga_barang,
       jumlah: transaksis.value.jumlah,
       total_harga: selected.harga_barang * transaksis.value.jumlah,
+      stok_barang: selected.stok_barang, // simpan untuk validasi qty di tempat lain
     });
   }
 
@@ -160,6 +184,35 @@ function tambahKeKeranjang() {
   transaksis.value.jumlah = 1;
   transaksis.value.total_harga = 0;
 }
+
+// function tambahKeKeranjang() {
+//   const selected = barang.data.value?.find(
+//     (b) => b.id == transaksis.value.id_barang
+//   );
+//   if (!selected) return;
+
+//   const existingItem = transaksis.value.keranjang.find(
+//     (item: any) => item.id_barang === selected.id
+//   );
+
+//   if (existingItem) {
+//     existingItem.jumlah += transaksis.value.jumlah;
+//     existingItem.total_harga =
+//       existingItem.harga_barang * existingItem.jumlah;
+//   } else {
+//     transaksis.value.keranjang.push({
+//       id_barang: selected.id,
+//       nama_barang: selected.nama_barang,
+//       harga_barang: selected.harga_barang,
+//       jumlah: transaksis.value.jumlah,
+//       total_harga: selected.harga_barang * transaksis.value.jumlah,
+//     });
+//   }
+
+  transaksis.value.id_barang = null;
+  transaksis.value.jumlah = 1;
+  transaksis.value.total_harga = 0;
+
 
 function syncKeranjangWithLatestBarang() {
   transaksis.value.keranjang = transaksis.value.keranjang.map((item) => {
@@ -461,9 +514,5 @@ html, body, #app {
 
 .card-body {
   overflow-y: auto;
-}
-
-.card-footer {
-  background: white;
 }
 </style>
