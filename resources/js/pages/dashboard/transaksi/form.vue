@@ -161,7 +161,7 @@ function tambahKeKeranjang() {
   const totalJumlah = (existingItem?.jumlah || 0) + transaksis.value.jumlah;
 
   if (totalJumlah > selected.stok_barang) {
-    toast.error("Jumlah melebihi stok yang tersedia.");
+    toast.error("Stok tidak tersedia.");
     return;
   }
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -102,16 +103,6 @@ Route::middleware('can:pembayaran')->group(function () {
     Route::get('/struk/{id}', [TransaksiController::class, 'cetakStruk'])->name('cetakStruk');
 });
 
-// Route::middleware(['auth:sanctum', 'verified', 'json'])
-//     ->prefix('history')
-//     ->middleware('can:history')
-//     ->group(function () {
-//         Route::get('/detail_transaksi', [HistoryController::class, 'detailTransaksi']); // <- Pindahkan ke atas
-//         Route::get('/', [HistoryController::class, 'index']);           // Ambil semua data history
-//         Route::post('/', [HistoryController::class, 'store']);          // Simpan data history baru
-//         Route::get('/{id}', [HistoryController::class, 'show']);        // Lihat detail history
-//         Route::put('/{id}', [HistoryController::class, 'update']);      // Update data history
-//         Route::delete('/{id}', [HistoryController::class, 'destroy']);  // Hapus history
-//     });
+Route::get('/sales-data', [DashboardController::class, 'getSalesData']);
 
 

@@ -76,6 +76,7 @@ onMounted(() => {
 
           <hr />
           <p class="text-center">--- Terima Kasih ---</p>
+          <p class="text-center">Barang yang sudah dibeli tidak bisa dikembalikan kecuali atas kesepakatan pihak toko dan pelanggan</p>
         </div>
       </div>
 
@@ -93,8 +94,8 @@ onMounted(() => {
   width: 80mm;
   padding: 10px;
   margin: 0 auto; /* Ini memastikan struk berada di tengah */
-  background: white;
-  color: black;
+  background: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
 }
 
 @media print {
