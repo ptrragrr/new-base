@@ -16,7 +16,7 @@ const { delete: deleteUser } = useDelete({
 
 const columns = [
     column.accessor("no", {
-        header: "#",
+        header: "No",
     }),
     column.accessor("nama", {
         header: "Nama Kategori",

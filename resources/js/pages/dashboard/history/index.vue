@@ -17,9 +17,17 @@ async function handleShowDetail(trx: Transaksi) {
   detailItems.value = res.data;
   console.log(detailItems) // Ambil array detail saja
 }
+
+function rupiah(angka: number | string): string {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(Number(angka));
+}
   
 const columns = [
-  column.accessor("no", { header: "#" }),
+  column.accessor("no", { header: "No" }),
   column.accessor("kode_transaksi", { header: "Kode Transaksi" }),
   column.accessor("nama_kasir", { header: "Nama Kasir" }),
   column.display({
@@ -29,7 +37,7 @@ const columns = [
       h(
         "button",
         {
-          class: "text-blue-500 hover:underline",
+          class: "btn btn-sm btn-icon btn-info w-50",
           onClick: () => handleShowDetail(row.original),
         },
         "Lihat Detail"
@@ -53,9 +61,9 @@ function formatTanggal(tanggal: string) {
     <a
       href="/transaksi/download-pdf"
       target="_blank"
-      class="flex items-center gap-2 bg-blue-600 text-lg font-bold px-4 py-2 rounded hover:bg-blue-700"
+      class="flex items-center btn btn-sm btn-icon btn-info w-35"
     >
-      🗎 CETAK LAPORAN
+     🖨️
     </a>
   </div>
     <div class="card-body">
@@ -67,47 +75,47 @@ function formatTanggal(tanggal: string) {
       />
 
       <!-- Detail Transaksi -->
-      <div
-        v-if="selectedTransaksi"
-        class="mt-6 p-4 border rounded bg-gray-50 shadow"
-      >
-        <h3 class="text-lg font-bold mb-2">Detail Transaksi</h3>
-        <p><strong>Kode Transaksi:</strong> {{ selectedTransaksi.kode_transaksi }}</p>
-        <p><strong>Nama Kasir:</strong> {{ selectedTransaksi.nama_kasir }}</p>
-        <p><strong>Tanggal Transaksi:</strong> {{ formatTanggal(selectedTransaksi.created_at) }}</p>
+<div
+  v-if="selectedTransaksi"
+  class="mt-6 p-4 border rounded bg-blue-100 shadow"
+>
+  <h3 class="text-lg font-bold mb-2 ">Detail Transaksi</h3>
+  <p><strong>Kode Transaksi:</strong> {{ selectedTransaksi.kode_transaksi }}</p>
+  <p><strong>Nama Kasir:</strong> {{ selectedTransaksi.nama_kasir }}</p>
+  <p><strong>Tanggal Transaksi:</strong> {{ formatTanggal(selectedTransaksi.created_at) }}</p>
 
-        <table class="w-full mt-4 text-sm border">
-          <thead class="bg-gray-200 text-left">
-            <tr>
-              <th class="p-2">Nama Barang</th>
-              <th class="p-2">Jumlah</th>   
-              <th class="p-2">Harga Satuan</th>
-              <th class="p-2">Total Harga</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in detailItems" :key="index">
-              <td class="p-2">{{ item.nama_barang ?? '-' }}</td>
-              <td class="p-2">{{ item.jumlah }}</td>
-              <td class="p-2">Rp {{ item.harga_satuan }}</td>
-              <td class="p-2">Rp {{ item.total_harga }}</td>
-            </tr>
-          </tbody>
-        </table>
+  <table class="w-full mt-4 text-sm border">
+    <thead class="bg-blue-200 text-left">
+      <tr>
+        <th class="p-2">Nama Barang</th>
+        <th class="p-2">Jumlah</th>   
+        <th class="p-2">Harga Satuan</th>
+        <th class="p-2">Total Harga</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(item, index) in detailItems" :key="index">
+        <td class="p-2">{{ item.nama_barang ?? '-' }}</td>
+        <td class="p-2">{{ item.jumlah }}</td>
+        <td class="p-2">{{ rupiah(item.harga_satuan) }}</td>
+        <td class="p-2">{{ rupiah(item.total_harga) }}</td>
+      </tr>
+    </tbody>
+  </table>
 
-        <p class="mt-2 text-right font-semibold">
-          Total Bayar: Rp {{
-            detailItems.reduce((acc, item) => acc + Number(item.total_harga), 0)
-          }}
-        </p>
+  <p class="mt-2 text-right font-semibold">
+    Total Bayar: {{
+      rupiah(detailItems.reduce((acc, item) => acc + Number(item.total_harga), 0)) 
+    }}
+  </p>
 
-        <button
-          class="mt-4 px-4 py-2 bg-red-500 text-black rounded hover:bg-red-600"
-          @click="selectedTransaksi = null"
-        >
-          Tutup
-        </button>
+  <button
+    class="btn btn-sm btn-icon btn-info w-50"
+    @click="selectedTransaksi = null"
+  >
+    Tutup
+  </button>
+</div>
       </div>
     </div>
-  </div>
 </template>

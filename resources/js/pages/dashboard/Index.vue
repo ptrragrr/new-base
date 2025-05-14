@@ -12,7 +12,8 @@ onMounted(async () => {
     const data = response.data
 
     // Ambil bulan dan total
-    const labels = data.map((item: any) => `Bulan ${item.month}`)
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+    const labels = data.map((item: any) => monthNames[item.month - 1])
     const totals = data.map((item: any) => item.total)
 
     // Tampilkan Chart
@@ -25,7 +26,7 @@ onMounted(async () => {
             {
               label: 'Total Penjualan per Bulan',
               data: totals,
-              backgroundColor: ['#FFC5A6', ' #DC8E90', '#A97882'] ,
+              backgroundColor: '#504E76',
               barThickness: 50             // Lebar batang (pixel) 
             }
           ]
