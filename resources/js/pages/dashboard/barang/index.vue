@@ -14,6 +14,16 @@ const { delete: deleteUser } = useDelete({
     onSuccess: () => paginateRef.value.refetch(),
 });
 
+function resolveImageUrl(foto: string): string {
+    if (!foto) return "";
+
+    // Jika sudah URL absolut
+    if (foto.startsWith("http")) return foto;
+
+    // Jika masih nama file atau path lokal
+    return `${window.location.origin}${foto.startsWith("/storage") ? foto : "/storage/" + foto}`;
+}
+
 const columns = [
     column.accessor("no", {
         header: "No",
@@ -27,6 +37,17 @@ const columns = [
     column.accessor("harga_barang", {
         header: "Harga Barang",
     }),
+    column.accessor("foto_barang", {
+    header: "Foto Barang",
+    cell: ({ getValue }) => {
+        const url = resolveImageUrl(getValue());
+        return h("img", {
+            src: url,
+            alt: "Foto Barang",
+            style: "width: 60px; height: 60px; object-fit: cover; border-radius: 4px;",
+        });
+    },
+}),
     column.accessor("stok_barang", {
         header: "Stok Barang",
     }),

@@ -33,8 +33,8 @@ class BarangController extends Controller
                 $query->where('barang.nama_barang', 'like', "%$search%")
                     ->orWhere('kategori.nama', 'like', "%$search%")
                     ->orWhere('harga_barang', 'like', "%$search%")
-                    ->orWhere('stok_barang', 'like', "%$search%");
-                    // ->orWhere('foto_barang', 'like', "%$search%");
+                    ->orWhere('stok_barang', 'like', "%$search%")
+                    ->orWhere('foto_barang', 'like', "%$search%");
             })->select('barang.*', 'kategori.nama as kategori')->latest()->paginate($per);
             // })->latest()->paginate($per, ['*', DB::raw('@no := @no + 1 AS no')]);
 
@@ -47,31 +47,52 @@ class BarangController extends Controller
     }
 
     // Menyimpan barang ke database
-    public function store(BarangRequest $request)
-    {
-        $validatedData = $request->validated();
-        $barang = Barang::create([
-            'nama_barang' => $validatedData['nama_barang'],
-            'id_kategori' => $validatedData['id_kategori'],
-            'harga_barang' => $validatedData['harga_barang'],
-            'stok_barang' => $validatedData['stok_barang'],
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'barang' => $barang,
-        ]);
-    }
-
-    public function update(BarangRequest $request, Barang $barang)
+   public function store(BarangRequest $request)
 {
     $validatedData = $request->validated();
 
-    $barang->update([
+    // Upload file jika ada
+    if ($request->hasFile('foto_barang')) {
+        $file = $request->file('foto_barang');
+        $path = $file->store('barang', 'public'); // simpan di storage/app/public/barang
+        $validatedData['foto_barang'] = $path;
+    } else {
+        $validatedData['foto_barang'] = null;
+    }
+
+    $barang = Barang::create([
         'nama_barang' => $validatedData['nama_barang'],
-        'id_kategori' => $validatedData['id_kategori'], // GANTI INI
+        'id_kategori' => $validatedData['id_kategori'],
         'harga_barang' => $validatedData['harga_barang'],
         'stok_barang' => $validatedData['stok_barang'],
+        'foto_barang' => $validatedData['foto_barang'],
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'barang' => $barang,
+    ]);
+}
+
+   public function update(BarangRequest $request, Barang $barang)
+{
+    $validatedData = $request->validated();
+
+    if ($request->hasFile('foto_barang')) {
+        $file = $request->file('foto_barang');
+        $path = $file->store('barang', 'public');
+        $validatedData['foto_barang'] = $path;
+    } else {
+        // Jika tidak upload file baru, bisa simpan yang lama atau null tergantung logikamu
+        $validatedData['foto_barang'] = $barang->foto_barang;
+    }
+
+    $barang->update([
+        'nama_barang' => $validatedData['nama_barang'],
+        'id_kategori' => $validatedData['id_kategori'],
+        'harga_barang' => $validatedData['harga_barang'],
+        'stok_barang' => $validatedData['stok_barang'],
+        'foto_barang' => $validatedData['foto_barang'],
     ]);
 
     return response()->json([
@@ -101,6 +122,8 @@ public function destroy(Barang $barang)
             'id_kategori' => $barang->id_kategori, // GANTI INI
             'harga_barang' => $barang->harga_barang,
             'stok_barang' => $barang->stok_barang,
+            'foto_barang' => $barang->foto_barang,
+
         ]
     ]);
 }

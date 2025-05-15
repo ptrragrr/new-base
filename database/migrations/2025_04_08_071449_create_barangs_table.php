@@ -14,7 +14,7 @@ class CreateBarangsTable extends Migration
             $table->foreignId('id_kategori')->constrained('kategori')->onDelete('cascade');
             $table->decimal('harga_barang', 10, 3);  // Menyimpan harga dalam format desimal
             $table->string('stok_barang');
-            // $table->string('foto_barang')->nullable();  // Kolom untuk menyimpan nama file gambar
+            $table->string('foto_barang')->nullable();  // Kolom untuk menyimpan nama file gambar
             $table->timestamps();  // Menambahkan created_at dan updated_at
         });
     }

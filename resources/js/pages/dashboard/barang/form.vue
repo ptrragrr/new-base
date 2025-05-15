@@ -20,13 +20,33 @@ const emit = defineEmits(["close", "refresh"]);
 const barang = ref<Barang>({} as Barang);
 const formRef = ref();
 const kategoriOptions = ref<{ id: number; nama: string }[]>([]);
+const foto_barang = ref<File[]>([]);
+const fileTypes = ["image/png", "image/jpeg", "image/jpg"];
 
 const formSchema = Yup.object().shape({
     nama_barang: Yup.string().required("Nama harus diisi"),
     id_kategori: Yup.string().required("Kategori harus dipilih"),
     harga_barang: Yup.number().required("Masukkan harga"),
     stok_barang: Yup.number().required("Stok harus di isi"),
-    // photo: Yup.mixed().nullable(),
+    foto_barang: Yup.mixed().nullable(),
+});
+
+const previewImage = computed(() => {
+  if (!foto_barang.value.length) return null;
+
+  const first = foto_barang.value[0];
+
+  if (typeof first === "string") {
+    // URL lama dari database
+    return first;
+  }
+
+  if (first && first.file instanceof File) {
+    // File baru dari upload
+    return URL.createObjectURL(first.file);
+  }
+
+  return null;
 });
 
 function getEdit() {
@@ -36,10 +56,10 @@ function getEdit() {
         .then(({ data }) => {
             console.log(data);
             barang.value = data.barang;
-            // photo.value = data.product.photo
-            //     ? ["/storage/" + data.product.photo]
-            //     : [];
-            // console.log("Kategori Produk:", barang.value.id_category);
+            foto_barang.value = data.product.foto_barang
+                ? ["/storage/" + data.product.foto_barang]
+                : [];
+            console.log("Kategori Produk:", barang.value.id_kategori);
         })
         .catch((err: any) => {
             toast.error(err.response.data.message);
@@ -58,9 +78,9 @@ function submit() {
     formData.append("harga_barang", barang.value.harga_barang);
     formData.append("stok_barang", barang.value.stok_barang);
 
-    // if (photo.value.length) {
-    //     formData.append("photo", photo.value[0].file);
-    // }
+    if (foto_barang.value.length) {
+        formData.append("foto_barang", foto_barang.value[0].file);
+    }
     if (props.selected) {
         formData.append("_method", "PUT");
     }
@@ -240,28 +260,38 @@ watch(
                         </div>
                     </div>
                 </div>
-                <!-- <div class="col-md-6"> -->
-                    <!--begin::Input group-->
-                    <!-- <div class="fv-row mb-7">
-                        <label class="form-label fw-bold fs-6">
-                            Foto Barang
-                        </label>
-                        <!--begin::Input-->
-                        <!-- <file-upload
-                            :files="photo"
-                            :accepted-file-types="fileTypes"
-                            required
-                            v-on:updatefiles="(file) => (photo = file)"
-                        ></file-upload> -->
-                        <!--end::Input-->
-                        <!-- <div class="fv-plugins-message-container">
-                            <div class="fv-help-block">
-                                <ErrorMessage name="photo" />
-                            </div>
-                        </div>
-                    </div> -->
-                    <!--end::Input group-->
-                <!-- </div> -->
+                <div class="col-md-6">
+  <!--begin::Input group-->
+  <div class="fv-row mb-7">
+    <label class="form-label fw-bold fs-6">
+      Foto Barang
+    </label>
+    <!--begin::Input-->
+    <file-upload
+      :files="foto_barang"
+      :accepted-file-types="fileTypes"
+      required
+      v-on:updatefiles="(file) => (foto_barang = file)"
+    ></file-upload>
+    <!--end::Input-->
+
+    <!-- Preview gambar -->
+<!-- <div v-if="previewImage" class="mt-3">
+  <img
+    :src="previewImage"
+    alt="Preview Foto Barang"
+    style="max-width: 200px; max-height: 200px; object-fit: contain; border-radius: 5px;"
+  />
+</div> -->
+
+    <div class="fv-plugins-message-container">
+      <div class="fv-help-block">
+        <ErrorMessage name="foto_barang" />
+      </div>
+    </div>
+  </div>
+  <!--end::Input group-->
+</div>
             </div>
         </div>
         <div class="card-footer d-flex">
