@@ -56,8 +56,8 @@ function getEdit() {
         .then(({ data }) => {
             console.log(data);
             barang.value = data.barang;
-            foto_barang.value = data.product.foto_barang
-                ? ["/storage/" + data.product.foto_barang]
+            foto_barang.value = data.barang.foto_barang
+                ? ["/storage/" + data.barang.foto_barang]
                 : [];
             console.log("Kategori Produk:", barang.value.id_kategori);
         })
