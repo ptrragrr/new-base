@@ -67,6 +67,15 @@ const kurangJumlah = (id: number) => {
   }
 };
 
+const batalTransaksi = () => {
+ {
+    keranjang.value = [];
+    uangBayar.value = null;
+    jumlah.value = 1;
+    emit("refresh");
+  }
+};
+
 // Hitung total harga keranjang
 const totalHarga = computed(() => {
   return keranjang.value.reduce(
@@ -153,9 +162,14 @@ const simpanSemuaTransaksi = () => {
           Kembalian: Rp {{ kembalian !== null ? kembalian.toLocaleString() : '0' }}
         </div>
 
-        <button class="btn btn-success mt-3" @click="simpanSemuaTransaksi">
-          Bayar & Simpan Transaksi
-        </button>
+        <div class="d-flex mt-3">
+  <button class="btn btn-danger me-2" @click="batalTransaksi">
+    Batal 
+  </button>
+  <button class="btn btn-success" @click="simpanSemuaTransaksi">
+    Bayar
+  </button>
+</div>
       </div>
     </div>
   </div>
