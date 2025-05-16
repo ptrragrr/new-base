@@ -35,8 +35,15 @@ const columns = [
         header: "Kategori Barang",
     }),
     column.accessor("harga_barang", {
-        header: "Harga Barang",
-    }),
+    header: "Harga Barang",
+    cell: ({ getValue }) => {
+        const harga = getValue();
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+        }).format(harga).replace(/,00$/, "");
+    },
+}),
     column.accessor("foto_barang", {
     header: "Foto Barang",
     cell: ({ getValue }) => {

@@ -57,7 +57,7 @@ class HistoryController extends Controller
 
 public function preview_pdf()
 {
-    $data = Transaksi::join('user','kasir.')->orderBy('created_at', 'desc')->get();
+    $data = Transaksi::join('user','nama_kasir.')->orderBy('created_at', 'desc')->get();
 
     // $data = Transaksi::with(['kasir', 'details'])->orderBy('created_at', 'desc')->get();
 
@@ -67,7 +67,7 @@ public function preview_pdf()
 
 public function download_pdf()
 {
-    $data = Transaksi::with(['kasir', 'details.barang']) // pakai relasi, bukan field
+    $data = Transaksi::with(['details.barang']) // pakai relasi, bukan field
         ->orderBy('created_at', 'desc')
         ->get();
 

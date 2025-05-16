@@ -13,11 +13,24 @@ const barang = useBarang();
 
 const barangList = computed(() => {
   const allBarang = barang.data.value || [];
+
+  // Filter hanya barang yang stoknya > 0
+  const tersedia = allBarang.filter((b) => Number(b.stok_barang) > 0);
+
   if (selectedKategoriId.value && selectedKategoriId.value !== 0) {
-    return allBarang.filter((b) => b.id_kategori === selectedKategoriId.value);
+    return tersedia.filter((b) => b.id_kategori === selectedKategoriId.value);
   }
-  return allBarang;
+  return tersedia;
 });
+
+
+// const barangList = computed(() => {
+//   const allBarang = barang.data.value || [];
+//   if (selectedKategoriId.value && selectedKategoriId.value !== 0) {
+//     return allBarang.filter((b) => b.id_kategori === selectedKategoriId.value);
+//   }
+//   return allBarang;
+// });
 
 const fetchKategori = async () => {
   try {

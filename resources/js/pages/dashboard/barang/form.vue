@@ -49,6 +49,11 @@ const previewImage = computed(() => {
   return null;
 });
 
+function formatPriceInput(value: string): string {
+    const numeric = value.replace(/\D/g, ""); // Hanya angka
+    return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 function getEdit() {
     console.log('ditekan');
     block(document.getElementById("form-barang"));
@@ -56,6 +61,7 @@ function getEdit() {
         .then(({ data }) => {
             console.log(data);
             barang.value = data.barang;
+            barang.value.harga_barang = formatPriceInput(data.barang.harga_barang.toString());
             foto_barang.value = data.barang.foto_barang
                 ? ["/storage/" + data.barang.foto_barang]
                 : [];
@@ -75,7 +81,7 @@ function submit() {
     const formData = new FormData();
     formData.append("nama_barang", barang.value.nama_barang);
     formData.append("id_kategori", barang.value.id_kategori);
-    formData.append("harga_barang", barang.value.harga_barang);
+    formData.append("harga_barang", barang.value.harga_barang.replace(/\./g, ""));
     formData.append("stok_barang", barang.value.stok_barang);
 
     if (foto_barang.value.length) {

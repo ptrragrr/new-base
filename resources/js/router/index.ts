@@ -108,7 +108,7 @@ const routes: Array<RouteRecordRaw> = [
             },
 
             {
-                path: "/dashboard/struk",
+                path: "/transaksi/struk",
                 name: "struk",
                 component: () =>
                     import("@/pages/dashboard/transaksi/struk.vue"),
