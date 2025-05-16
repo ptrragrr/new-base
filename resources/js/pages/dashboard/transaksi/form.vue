@@ -113,9 +113,14 @@ const simpanSemuaTransaksi = () => {
         <h5>{{ props.selectedBarang.nama_barang }}</h5>
         <p>Harga: Rp {{ props.selectedBarang.harga_barang.toLocaleString() }}</p>
 
-        <button class="btn btn-primary mt-3" @click="tambahKeKeranjang">
-          Tambah ke Keranjang
-        </button>
+       <button
+  class="btn btn-primary mt-3"
+  @click="tambahKeKeranjang"
+  :disabled="props.selectedBarang.stok_barang === 0"
+>
+  {{ props.selectedBarang.stok_barang === 0 ? 'Stok Habis' : 'Tambah ke Keranjang' }}
+</button>
+
       </div>
       <div v-else class="text-muted mb-3">
         Pilih barang terlebih dahulu.
