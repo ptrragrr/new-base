@@ -89,17 +89,17 @@ Route::middleware('can:history')->group(function () {
     ->except(['index', 'store']);
 });    
 
-Route::middleware('can:pembayaran')->group(function () {
+Route::prefix('transaksi')->group(function () {
     // Rute ambil data transaksi (misalnya untuk list)
-    Route::get('transaksi', [TransaksiController::class, 'index']);
+    Route::get('', [TransaksiController::class, 'index']);
     // Rute simpan transaksi baru
-    Route::post('/transaksi/store', [TransaksiController::class, 'store']);
-    // Rute ambil detail transaksi tertentu (jika diperlukan)
-    Route::get('transaksi/{id}', [TransaksiController::class, 'show']);
+    Route::post('/store', [TransaksiController::class, 'store']);
+    // Rute ambil detail transaksi tertentu (jika diperlukan)   
+    Route::get('/{id}', [TransaksiController::class, 'show']);
     // Rute update transaksi
-    Route::put('transaksi/{id}', [TransaksiController::class, 'update']);
+    Route::put('/{id}', [TransaksiController::class, 'update']);
     // Rute hapus transaksi
-    Route::delete('transaksi/{id}', [TransaksiController::class, 'destroy']);
+    Route::delete('/{id}', [TransaksiController::class, 'destroy']);
     Route::get('/struk/{id}', [TransaksiController::class, 'cetakStruk'])->name('cetakStruk');
 });
 

@@ -12,13 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaksis', function (Blueprint $table) {
+            $table->id();
+            $table->string('kode_transaksi')->unique();
             $table->string('nama_kasir');
-            $table->decimal('total_harga', 12, 2);
-            $table->string('kode_transaksi')->unique()->after('id');
-            $table->date('tanggal');
+            $table->string('metode_pembayaran');  // ini belum ada di migrasi kamu, tapi dipakai di controller
+            $table->decimal('total_transaksi', 12, 2);
+            $table->decimal('bayar', 12, 2)->nullable();
+            $table->decimal('kembalian', 12, 2);
+            $table->date('tanggal')->default(DB::raw('CURRENT_DATE')); // tanggal, default hari ini
             $table->timestamps();
         });
-        
     }
 
     /**

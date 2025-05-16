@@ -112,14 +112,14 @@ const loadBarang = () => {
 </template>
 
 <style>
-.card.kartu-habis {
+/* .card.kartu-habis {
   opacity: 0.6;
   cursor: not-allowed;
   background-color: #f8d7da;
   border: 1px solid #dc3545;
   position: relative;
   overflow: hidden;
-}
+} */
 
 .card.kartu-habis img {
   filter: grayscale(100%);

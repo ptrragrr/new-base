@@ -20,13 +20,15 @@ class TransaksiController extends Controller
     // }
     
     public function get(Request $request)
-    {
-        $barang = Barang::where('stok_barang', '>', 0)->get();
-        return response()->json([
-            'success' => true,
-            'data' => Barang::all()
-        ]);
-    }
+{
+    // Ambil barang yang stoknya > 0 saja
+    $barang = Barang::where('stok_barang', '>', 0)->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $barang
+    ]);
+}
 
     // use App\Models\Transaksi;
 
@@ -87,7 +89,7 @@ public function store(Request $request)
         'keranjang' => 'required|string',
         'total' => 'required|numeric',
         'kembalian' => 'required|numeric',
-        'bayar' => 'nullable|numeric',
+        'bayar' => 'required|numeric',
     ]);
 
     $keranjang = json_decode($validated['keranjang'], true);
