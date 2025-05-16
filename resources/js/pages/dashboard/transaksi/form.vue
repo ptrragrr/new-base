@@ -12,6 +12,7 @@ const emit = defineEmits(["refresh"]);
 const jumlah = ref(1);
 const keranjang = ref<{ barang: Barang; jumlah: number }[]>([]);
 const uangBayar = ref<number | null>(null);
+const metodePembayaran = ref("Tunai"); // default: Tunai
 
 const kembalian = computed(() => {
     if (uangBayar.value === null) return null;
@@ -71,28 +72,31 @@ const totalHarga = computed(() => {
 });
 
 const simpanSemuaTransaksi = async () => {
-  if (uangBayar.value === null || uangBayar.value < totalHarga.value) {
-    alert("Uang bayar kurang atau belum diisi");
-    return;
-  }
+  if (
+  metodePembayaran.value === "Tunai" &&
+  (uangBayar.value === null || uangBayar.value < totalHarga.value)
+) {
+  alert("Uang bayar kurang atau belum diisi");
+  return;
+}
 
   const token = localStorage.getItem("token"); // pastikan token ada
 
   const payload = {
-    nama_kasir: "Kasir Contoh",
-    metode_pembayaran: "Tunai",
-    keranjang: JSON.stringify(
-      keranjang.value.map((item) => ({
-        id_barang: item.barang.id,
-        jumlah: item.jumlah,
-        harga_barang: item.barang.harga_barang,
-        total_harga: item.barang.harga_barang * item.jumlah,
-      }))
-    ),
-    total: totalHarga.value,
-    bayar: uangBayar.value,
-    kembalian: kembalian.value,
-  };
+  nama_kasir: "Kasir Contoh",
+  metode_pembayaran: metodePembayaran.value,
+  keranjang: JSON.stringify(
+    keranjang.value.map((item) => ({
+      id_barang: item.barang.id,
+      jumlah: item.jumlah,
+      harga_barang: item.barang.harga_barang,
+      total_harga: item.barang.harga_barang * item.jumlah,
+    }))
+  ),
+  total: totalHarga.value,
+  bayar: metodePembayaran.value === "Tunai" ? uangBayar.value : totalHarga.value,
+  kembalian: metodePembayaran.value === "Tunai" ? kembalian.value : 0,
+};
 
   try {
     const response = await axios.post("/transaksi/store", payload, {
@@ -190,16 +194,28 @@ const simpanSemuaTransaksi = async () => {
                 </div>
 
                 <div class="mt-3">
-                    <label for="uangBayar" class="form-label">Uang Bayar</label>
-                    <input
-                        id="uangBayar"
-                        type="number"
-                        class="form-control"
-                        v-model.number="uangBayar"
-                        min="0"
-                        placeholder="Masukkan uang pembayaran"
-                    />
-                </div>
+  <label for="metodePembayaran" class="form-label">Metode Pembayaran</label>
+  <select
+    id="metodePembayaran"
+    class="form-select"
+    v-model="metodePembayaran"
+  >
+    <option value="Tunai">Tunai</option>
+    <option value="Debit">Debit</option>
+  </select>
+</div>
+
+                <div class="mt-3" v-if="metodePembayaran === 'Tunai'">
+  <label for="uangBayar" class="form-label">Uang Bayar</label>
+  <input
+    id="uangBayar"
+    type="number"
+    class="form-control"
+    v-model.number="uangBayar"
+    min="0"
+    placeholder="Masukkan uang pembayaran"
+  />
+</div>
 
                 <div class="mt-2 fw-bold" v-if="uangBayar !== null">
                     Kembalian: Rp
