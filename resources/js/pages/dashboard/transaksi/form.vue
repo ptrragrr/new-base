@@ -94,6 +94,10 @@ const kurangJumlah = (id: number) => {
     }
 };
 
+const hapusItem = (id: number) => {
+    keranjang.value = keranjang.value.filter(item => item.barang.id !== id);
+};
+ 
 const batalTransaksi = () => {
     keranjang.value = [];
     uangBayar.value = null;
@@ -254,6 +258,7 @@ const simpanSemuaTransaksi = async () => {
                                 >
                                     +
                                 </button>
+                                <button class="btn btn-sm btn-danger" @click="hapusItem(item.barang.id)">Hapus</button>
                             </div>
                         </div>
                         <span>
