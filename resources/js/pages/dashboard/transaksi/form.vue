@@ -2,7 +2,10 @@
 import { ref, watch, computed } from "vue";
 import type { Barang } from "@/types";
 import axios from "axios";
+import { onMounted } from 'vue';
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+// import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps<{
     selectedBarang: Barang | null;
@@ -16,6 +19,9 @@ const keranjang = ref<{ barang: Barang; jumlah: number }[]>([]);
 const uangBayar = ref<number | null>(null);
 const uangBayarDisplay = ref("");
 const metodePembayaran = ref("Tunai");
+// const nama_kasir = ref("Loading...");
+const nama_kasir = ref(useAuthStore().user.name);
+// const user = usePage().props.value.auth.user;
 
 const kembalian = computed(() => {
     if (uangBayar.value === null) return null;
@@ -114,23 +120,23 @@ const simpanSemuaTransaksi = async () => {
     const token = localStorage.getItem("token");
 
     const payload = {
-        nama_kasir: "Kasir Contoh",
-        metode_pembayaran: metodePembayaran.value,
-        keranjang: JSON.stringify(
-            keranjang.value.map((item) => ({
-                id_barang: item.barang.id,
-                jumlah: item.jumlah,
-                harga_barang: item.barang.harga_barang,
-                total_harga: item.barang.harga_barang * item.jumlah,
-            }))
-        ),
-        total: totalHarga.value,
-        bayar:
-            metodePembayaran.value === "Tunai"
-                ? uangBayar.value
-                : totalHarga.value,
-        kembalian: metodePembayaran.value === "Tunai" ? kembalian.value : 0,
-    };
+    nama_kasir: nama_kasir.value,
+    metode_pembayaran: metodePembayaran.value,
+    keranjang: JSON.stringify(
+        keranjang.value.map((item) => ({
+            id_barang: item.barang.id,
+            jumlah: item.jumlah,
+            harga_barang: item.barang.harga_barang,
+            total_harga: item.barang.harga_barang * item.jumlah,
+        }))
+    ),
+    total: totalHarga.value,
+    bayar:
+        metodePembayaran.value === "Tunai"
+            ? uangBayar.value
+            : totalHarga.value,
+    kembalian: metodePembayaran.value === "Tunai" ? kembalian.value : 0,
+};
 
     try {
   const response = await axios.post("/transaksi/store", payload, {
@@ -148,22 +154,22 @@ const simpanSemuaTransaksi = async () => {
     }));
 
     router.push({
-      path: "/transaksi/struk",
-      query: {
-        nama_kasir: "Kasir Contoh",
+    path: "/transaksi/struk",
+    query: {
+        nama_kasir: nama_kasir.value,
         metode_pembayaran: metodePembayaran.value,
         total_harga: totalHarga.value.toString(),
         bayar: (metodePembayaran.value === "Tunai"
-          ? uangBayar.value
-          : totalHarga.value
+            ? uangBayar.value
+            : totalHarga.value
         )?.toString(),
         kembalian: (metodePembayaran.value === "Tunai"
-          ? kembalian.value
-          : 0
+            ? kembalian.value
+            : 0
         )?.toString(),
         detail_produk: JSON.stringify(detail_produk),
-      },
-    });
+    },
+});
   } else {
     alert("Gagal menyimpan transaksi: " + response.data.message);
   }
@@ -171,6 +177,22 @@ const simpanSemuaTransaksi = async () => {
   alert("Gagal menyimpan transaksi: " + error.message);
   console.error(error);
 }
+onMounted(async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+        const res = await axios.get("/api/user", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        nama_kasir.value = res.data.name || res.data.nama || "Kasir";
+    } catch (error: any) {
+        console.error("Gagal mengambil data user:", error);
+        nama_kasir.value = "Kasir";
+    }
+});
 }
 </script>
 

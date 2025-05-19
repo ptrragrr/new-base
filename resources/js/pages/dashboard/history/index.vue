@@ -3,10 +3,12 @@ import { h, ref } from "vue";
 import { useDelete } from "@/libs/hooks";
 import { createColumnHelper } from "@tanstack/vue-table";
 import type { Transaksi } from "@/types";
+import { useAuthStore } from "@/stores/auth";
 import axios from "axios";
 
 const column = createColumnHelper<Transaksi>();
 const paginateRef = ref<any>(null);
+const user = useAuthStore().user;
 
 const selectedTransaksi = ref<Transaksi | null>(null)
 const detailItems = ref<any[]>([])
