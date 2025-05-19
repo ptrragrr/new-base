@@ -144,10 +144,13 @@ onMounted(async () => {
 });
 
 watch(
-    () => props.selected,
-    () => {
-        if (props.selected) {
-            getEdit();
+    () => barang.value.harga_barang,
+    (newVal) => {
+        if (newVal) {
+            const formatted = formatPriceInput(newVal);
+            if (formatted !== newVal) {
+                barang.value.harga_barang = formatted;
+            }
         }
     }
 );
@@ -229,14 +232,14 @@ watch(
                         <label class="form-label fw-bold fs-6">
                             Harga Barang
                         </label>
-                        <Field
-                            class="form-control form-control-lg form-control-solid"
-                            type="text"
-                            name="harga_barang"
-                            autocomplete="off"
-                            v-model="barang.harga_barang"
-                            placeholder="Masukkan harga"
-                        />
+                            <Field
+                                class="form-control form-control-lg form-control-solid"
+                                type="text"
+                                name="harga_barang"
+                                autocomplete="off"
+                                v-model="barang.harga_barang"
+                                placeholder="Masukkan harga"
+                            />
                         <div class="fv-plugins-message-container">
                             <div class="fv-help-block">
                                 <ErrorMessage name="harga_barang" />
