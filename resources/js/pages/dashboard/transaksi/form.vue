@@ -2,7 +2,7 @@
 import { ref, watch, computed } from "vue";
 import type { Barang } from "@/types";
 import axios from "axios";
-import { onMounted } from 'vue';
+import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 // import { usePage } from '@inertiajs/vue3';
@@ -13,6 +13,7 @@ const props = defineProps<{
 
 const emit = defineEmits(["refresh"]);
 const router = useRouter();
+
 
 const jumlah = ref(1);
 const keranjang = ref<{ barang: Barang; jumlah: number }[]>([]);
@@ -120,80 +121,80 @@ const simpanSemuaTransaksi = async () => {
     const token = localStorage.getItem("token");
 
     const payload = {
-    nama_kasir: nama_kasir.value,
-    metode_pembayaran: metodePembayaran.value,
-    keranjang: JSON.stringify(
-        keranjang.value.map((item) => ({
-            id_barang: item.barang.id,
-            jumlah: item.jumlah,
-            harga_barang: item.barang.harga_barang,
-            total_harga: item.barang.harga_barang * item.jumlah,
-        }))
-    ),
-    total: totalHarga.value,
-    bayar:
-        metodePembayaran.value === "Tunai"
-            ? uangBayar.value
-            : totalHarga.value,
-    kembalian: metodePembayaran.value === "Tunai" ? kembalian.value : 0,
-};
-
-    try {
-  const response = await axios.post("/transaksi/store", payload, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (response.data.success) {
-    const detail_produk = keranjang.value.map((item) => ({
-      nama_barang: item.barang.nama_barang,
-      harga_barang: item.barang.harga_barang,
-      jumlah: item.jumlah,
-      total_harga: item.barang.harga_barang * item.jumlah,
-    }));
-
-    router.push({
-    path: "/transaksi/struk",
-    query: {
         nama_kasir: nama_kasir.value,
         metode_pembayaran: metodePembayaran.value,
-        total_harga: totalHarga.value.toString(),
-        bayar: (metodePembayaran.value === "Tunai"
-            ? uangBayar.value
-            : totalHarga.value
-        )?.toString(),
-        kembalian: (metodePembayaran.value === "Tunai"
-            ? kembalian.value
-            : 0
-        )?.toString(),
-        detail_produk: JSON.stringify(detail_produk),
-    },
-});
-  } else {
-    alert("Gagal menyimpan transaksi: " + response.data.message);
-  }
-} catch (error: any) {
-  alert("Gagal menyimpan transaksi: " + error.message);
-  console.error(error);
-}
-onMounted(async () => {
-    const token = localStorage.getItem("token");
+        keranjang: JSON.stringify(
+            keranjang.value.map((item) => ({
+                id_barang: item.barang.id,
+                jumlah: item.jumlah,
+                harga_barang: item.barang.harga_barang,
+                total_harga: item.barang.harga_barang * item.jumlah,
+            }))
+        ),
+        total: totalHarga.value,
+        bayar:
+            metodePembayaran.value === "Tunai"
+                ? uangBayar.value
+                : totalHarga.value,
+        kembalian: metodePembayaran.value === "Tunai" ? kembalian.value : 0,
+    };
 
     try {
-        const res = await axios.get("/api/user", {
+        const response = await axios.post("/transaksi/store", payload, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
 
-        nama_kasir.value = res.data.name || res.data.nama || "Kasir";
+        if (response.data.success) {
+            const detail_produk = keranjang.value.map((item) => ({
+                nama_barang: item.barang.nama_barang,
+                harga_barang: item.barang.harga_barang,
+                jumlah: item.jumlah,
+                total_harga: item.barang.harga_barang * item.jumlah,
+            }));
+
+            router.push({
+                path: "/transaksi/struk",
+                query: {
+                    nama_kasir: nama_kasir.value,
+                    metode_pembayaran: metodePembayaran.value,
+                    total_harga: totalHarga.value.toString(),
+                    bayar: (metodePembayaran.value === "Tunai"
+                        ? uangBayar.value
+                        : totalHarga.value
+                    )?.toString(),
+                    kembalian: (metodePembayaran.value === "Tunai"
+                        ? kembalian.value
+                        : 0
+                    )?.toString(),
+                    detail_produk: JSON.stringify(detail_produk),
+                },
+            });
+        } else {
+            alert("Gagal menyimpan transaksi: " + response.data.message);
+        }
     } catch (error: any) {
-        console.error("Gagal mengambil data user:", error);
-        nama_kasir.value = "Kasir";
+        alert("Gagal menyimpan transaksi: " + error.message);
+        console.error(error);
     }
-});
-}
+    onMounted(async () => {
+        const token = localStorage.getItem("token");
+
+        try {
+            const res = await axios.get("/api/user", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            nama_kasir.value = res.data.name || res.data.nama || "Kasir";
+        } catch (error: any) {
+            console.error("Gagal mengambil data user:", error);
+            nama_kasir.value = "Kasir";
+        }
+    });
+};
 </script>
 
 <template>
@@ -232,8 +233,9 @@ onMounted(async () => {
                     <li
                         v-for="item in keranjang"
                         :key="item.barang.id"
-                        class="list-group-item d-flex justify-content-between align-items-center"
+                        class="d-flex justify-content-between align-items-center"
                     >
+                    
                         <div>
                             {{ item.barang.nama_barang }} x {{ item.jumlah }}
                             <div
@@ -314,3 +316,13 @@ onMounted(async () => {
         </div>
     </div>
 </template>
+
+<style scoped>
+/* style global atau scoped */
+/* Hapus ini kalau class .keranjang tidak dipakai */
+.list-group-item.bg-dark {
+  background-color: #212529 !important;
+  color: #fff !important;
+  border-color: #444 !important;
+}
+</style>
