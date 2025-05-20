@@ -62,7 +62,7 @@ onMounted(() => {
 
             <div class="card-body" v-if="transaksi">
                 <div class="print-area">
-                    <h4 class="text-center">INDOKU GROCERY</h4>
+                    <h1 class="text-center">INDOKU GROCERY</h1>
                     <p class="text-center">
                         Jl. MANUKAN No. 123<br />
                         Telp: 0812-3456-7890
@@ -92,9 +92,6 @@ onMounted(() => {
                                     >{{ formatRupiah(item.harga_barang) }} x
                                     {{ item.jumlah }}</small
                                 >
-                            </div>
-                            <div class="fw-bold">
-                                {{ formatRupiah(item.total_harga) }}
                             </div>
                         </div>
                     </div>
@@ -135,9 +132,14 @@ onMounted(() => {
     font-size: 12px;
     width: 80mm;
     padding: 10px;
-    margin: 0 auto; /* Ini memastikan struk berada di tengah */
+    margin: 0 auto;
     background: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
+}
+
+.print-area h1,
+.print-area h5 {
+    color: black;
 }
 
 @media print {

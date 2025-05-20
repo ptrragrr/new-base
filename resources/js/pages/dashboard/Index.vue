@@ -26,7 +26,7 @@ onMounted(async () => {
             {
               label: 'Total Penjualan per Bulan',
               data: totals,
-              backgroundColor: '#504E76',
+              backgroundColor: '#4b6043',
               barThickness: 50             // Lebar batang (pixel) 
             }
           ]
