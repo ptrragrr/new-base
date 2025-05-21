@@ -298,6 +298,7 @@ const simpanSemuaTransaksi = async () => {
                         class="form-control"
                         v-model="uangBayarDisplay"
                         placeholder="Masukkan uang pembayaran"
+                        autocomplete="off"
                     />
                 </div>
 
