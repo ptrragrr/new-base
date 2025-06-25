@@ -84,6 +84,7 @@ function formatTanggal(tanggal: string) {
   <h3 class="text-lg font-bold mb-2 ">Detail Transaksi</h3>
   <p><strong>Kode Transaksi:</strong> {{ selectedTransaksi.kode_transaksi }}</p>
   <p><strong>Nama Kasir:</strong> {{ selectedTransaksi.nama_kasir }}</p>
+  <p><strong>Metode Pembayaran:</strong> {{ selectedTransaksi.metode_pembayaran }}</p>
   <p><strong>Tanggal Transaksi:</strong> {{ formatTanggal(selectedTransaksi.created_at) }}</p>
 
   <table class="w-full mt-4 text-sm border">

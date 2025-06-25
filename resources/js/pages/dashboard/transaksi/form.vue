@@ -14,7 +14,6 @@ const props = defineProps<{
 const emit = defineEmits(["refresh"]);
 const router = useRouter();
 
-
 const jumlah = ref(1);
 const keranjang = ref<{ barang: Barang; jumlah: number }[]>([]);
 const uangBayar = ref<number | null>(null);
@@ -95,9 +94,9 @@ const kurangJumlah = (id: number) => {
 };
 
 const hapusItem = (id: number) => {
-    keranjang.value = keranjang.value.filter(item => item.barang.id !== id);
+    keranjang.value = keranjang.value.filter((item) => item.barang.id !== id);
 };
- 
+
 const batalTransaksi = () => {
     keranjang.value = [];
     uangBayar.value = null;
@@ -239,7 +238,6 @@ const simpanSemuaTransaksi = async () => {
                         :key="item.barang.id"
                         class="d-flex justify-content-between align-items-center"
                     >
-                    
                         <div>
                             {{ item.barang.nama_barang }} x {{ item.jumlah }}
                             <div
@@ -258,7 +256,12 @@ const simpanSemuaTransaksi = async () => {
                                 >
                                     +
                                 </button>
-                                <button class="btn btn-sm btn-danger" @click="hapusItem(item.barang.id)">Hapus</button>
+                                <button
+                                    class="btn btn-sm btn-danger"
+                                    @click="hapusItem(item.barang.id)"
+                                >
+                                    Hapus
+                                </button>
                             </div>
                         </div>
                         <span>
@@ -272,23 +275,38 @@ const simpanSemuaTransaksi = async () => {
                     </li>
                 </ul>
 
+                <!-- <div class="mt-3 fw-bold">
+  Total: Rp {{ totalHarga.toLocaleString() }}
+</div>
+
+<label for="metodePembayaran" class="form-label mt-2">
+  Metode Pembayaran
+</label>
+<select
+  id="metodePembayaran"
+  class="form-select"
+  v-model="metodePembayaran"
+>
+  <option value="Tunai">Tunai</option>
+  <option value="Transfer">Transfer</option>
+  <option value="QRIS">QRIS</option>
+</select> -->
+
                 <div class="mt-3 fw-bold">
                     Total: Rp {{ totalHarga.toLocaleString() }}
                 </div>
 
-                <div class="mt-3">
-                    <label for="metodePembayaran" class="form-label"
-                        >Metode Pembayaran</label
-                    >
-                    <select
-                        id="metodePembayaran"
-                        class="form-select"
-                        v-model="metodePembayaran"
-                    >
-                        <option value="Tunai">Tunai</option>
-                        <option value="Debit">Debit</option>
-                    </select>
-                </div>
+                <label for="metodePembayaran" class="form-label mt-2">
+                    Metode Pembayaran
+                </label>
+                <select
+                    id="metodePembayaran"
+                    class="form-select"
+                    v-model="metodePembayaran"
+                >
+                    <option value="Tunai">Tunai</option>
+                    <option value="Debit">Debit</option>
+                </select>
 
                 <div class="mt-3" v-if="metodePembayaran === 'Tunai'">
                     <label for="uangBayar" class="form-label">Uang Bayar</label>
@@ -327,8 +345,8 @@ const simpanSemuaTransaksi = async () => {
 /* style global atau scoped */
 /* Hapus ini kalau class .keranjang tidak dipakai */
 .list-group-item.bg-dark {
-  background-color: #212529 !important;
-  color: #fff !important;
-  border-color: #444 !important;
+    background-color: #212529 !important;
+    color: #fff !important;
+    border-color: #444 !important;
 }
 </style>
