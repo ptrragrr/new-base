@@ -7,16 +7,32 @@ use App\Models\Barang;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
 {
     public function get(Request $request)
-    {
-        return response()->json([
-            'success' => true,
-            'data' => Barang::all()
-        ]);
-    }
+{
+    $barang = Barang::join('kategori', 'kategori.id', '=', 'barang.id_kategori')
+        ->select(
+            'barang.*',
+            'kategori.nama as kategori_nama',
+            DB::raw("CONCAT('" . asset('storage') . "/', barang.foto_barang) as foto_barang_url")
+        )
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $barang
+    ]);
+}
+    // public function get(Request $request)
+    // {
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => Barang::all()
+    //     ]);
+    // }
 
     /**
      * Display a paginated list of the resource.

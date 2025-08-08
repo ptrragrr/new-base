@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import type { Barang } from "@/types";
 import axios from "axios";
-import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-// import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps<{
     selectedBarang: Barang | null;
 }>();
 
-const emit = defineEmits(["refresh"]);
+const emit = defineEmits(["refresh", "clearSelected"]);
 const router = useRouter();
 
 const jumlah = ref(1);
@@ -19,9 +17,7 @@ const keranjang = ref<{ barang: Barang; jumlah: number }[]>([]);
 const uangBayar = ref<number | null>(null);
 const uangBayarDisplay = ref("");
 const metodePembayaran = ref("Tunai");
-// const nama_kasir = ref("Loading...");
 const nama_kasir = ref(useAuthStore().user.name);
-// const user = usePage().props.value.auth.user;
 
 const kembalian = computed(() => {
     if (uangBayar.value === null) return null;
@@ -35,14 +31,12 @@ watch(
     }
 );
 
-// Format uangBayarDisplay menjadi angka dan sinkron ke uangBayar
 watch(uangBayarDisplay, (val) => {
     const numeric = val.replace(/\D/g, "");
     uangBayar.value = numeric ? parseInt(numeric) : null;
     uangBayarDisplay.value = formatRupiah(numeric);
 });
 
-// Sinkronisasi uangBayar → uangBayarDisplay jika uangBayar diubah dari luar
 watch(uangBayar, (val) => {
     if (val === null) {
         uangBayarDisplay.value = "";
@@ -95,6 +89,10 @@ const kurangJumlah = (id: number) => {
 
 const hapusItem = (id: number) => {
     keranjang.value = keranjang.value.filter((item) => item.barang.id !== id);
+
+    if (props.selectedBarang?.id === id) {
+        emit("clearSelected");
+    }
 };
 
 const batalTransaksi = () => {
@@ -103,6 +101,7 @@ const batalTransaksi = () => {
     uangBayarDisplay.value = "";
     jumlah.value = 1;
     emit("refresh");
+    emit("clearSelected");
 };
 
 const totalHarga = computed(() => {
@@ -165,12 +164,10 @@ const simpanSemuaTransaksi = async () => {
                     total_harga: totalHarga.value.toString(),
                     bayar: (metodePembayaran.value === "Tunai"
                         ? uangBayar.value
-                        : totalHarga.value
-                    )?.toString(),
+                        : totalHarga.value)?.toString(),
                     kembalian: (metodePembayaran.value === "Tunai"
                         ? kembalian.value
-                        : 0
-                    )?.toString(),
+                        : 0)?.toString(),
                     detail_produk: JSON.stringify(detail_produk),
                 },
             });
@@ -181,6 +178,7 @@ const simpanSemuaTransaksi = async () => {
         alert("Gagal menyimpan transaksi: " + error.message);
         console.error(error);
     }
+
     onMounted(async () => {
         const token = localStorage.getItem("token");
 

@@ -32,21 +32,21 @@ const formSchema = Yup.object().shape({
 });
 
 const previewImage = computed(() => {
-  if (!foto_barang.value.length) return null;
+    if (!foto_barang.value.length) return null;
 
-  const first = foto_barang.value[0];
+    const first = foto_barang.value[0];
 
-  if (typeof first === "string") {
-    // URL lama dari database
-    return first;
-  }
+    if (typeof first === "string") {
+        // URL lama dari database
+        return first;
+    }
 
-  if (first && first.file instanceof File) {
-    // File baru dari upload
-    return URL.createObjectURL(first.file);
-  }
+    if (first && first.file instanceof File) {
+        // File baru dari upload
+        return URL.createObjectURL(first.file);
+    }
 
-  return null;
+    return null;
 });
 
 function formatPriceInput(value: string): string {
@@ -55,13 +55,15 @@ function formatPriceInput(value: string): string {
 }
 
 function getEdit() {
-    console.log('ditekan');
+    console.log("ditekan");
     block(document.getElementById("form-barang"));
     ApiService.get("tambah/barang", props.selected)
         .then(({ data }) => {
             console.log(data);
             barang.value = data.barang;
-            barang.value.harga_barang = formatPriceInput(data.barang.harga_barang.toString());
+            barang.value.harga_barang = formatPriceInput(
+                data.barang.harga_barang.toString()
+            );
             foto_barang.value = data.barang.foto_barang
                 ? ["/storage/" + data.barang.foto_barang]
                 : [];
@@ -77,11 +79,14 @@ function getEdit() {
 }
 
 function submit() {
-    console.log('submit')
+    console.log("submit");
     const formData = new FormData();
     formData.append("nama_barang", barang.value.nama_barang);
     formData.append("id_kategori", barang.value.id_kategori);
-    formData.append("harga_barang", barang.value.harga_barang.replace(/\./g, ""));
+    formData.append(
+        "harga_barang",
+        barang.value.harga_barang.replace(/\./g, "")
+    );
     formData.append("stok_barang", barang.value.stok_barang);
 
     if (foto_barang.value.length) {
@@ -225,21 +230,21 @@ watch(
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
                 <div class="col-md-6">
                     <!--begin::Input group-->
                     <div class="fv-row mb-7">
                         <label class="form-label fw-bold fs-6">
                             Harga Barang
                         </label>
-                            <Field
-                                class="form-control form-control-lg form-control-solid"
-                                type="text"
-                                name="harga_barang"
-                                autocomplete="off"
-                                v-model="barang.harga_barang"
-                                placeholder="Masukkan harga"
-                            />
+                        <Field
+                            class="form-control form-control-lg form-control-solid"
+                            type="text"
+                            name="harga_barang"
+                            autocomplete="off"
+                            v-model="barang.harga_barang"
+                            placeholder="Masukkan harga"
+                        />
                         <div class="fv-plugins-message-container">
                             <div class="fv-help-block">
                                 <ErrorMessage name="harga_barang" />
@@ -270,22 +275,22 @@ watch(
                     </div>
                 </div>
                 <div class="col-md-6">
-  <!--begin::Input group-->
-  <div class="fv-row mb-7">
-    <label class="form-label fw-bold fs-6">
-      Foto Barang
-    </label>
-    <!--begin::Input-->
-    <file-upload
-      :files="foto_barang"
-      :accepted-file-types="fileTypes"
-      required
-      v-on:updatefiles="(file) => (foto_barang = file)"
-    ></file-upload>
-    <!--end::Input-->
+                    <!--begin::Input group-->
+                    <div class="fv-row mb-7">
+                        <label class="form-label fw-bold fs-6">
+                            Foto Barang
+                        </label>
+                        <!--begin::Input-->
+                        <file-upload
+                            :files="foto_barang"
+                            :accepted-file-types="fileTypes"
+                            required
+                            v-on:updatefiles="(file) => (foto_barang = file)"
+                        ></file-upload>
+                        <!--end::Input-->
 
-    <!-- Preview gambar -->
-<!-- <div v-if="previewImage" class="mt-3">
+                        <!-- Preview gambar -->
+                        <!-- <div v-if="previewImage" class="mt-3">
   <img
     :src="previewImage"
     alt="Preview Foto Barang"
@@ -293,14 +298,14 @@ watch(
   />
 </div> -->
 
-    <div class="fv-plugins-message-container">
-      <div class="fv-help-block">
-        <ErrorMessage name="foto_barang" />
-      </div>
-    </div>
-  </div>
-  <!--end::Input group-->
-</div>
+                        <div class="fv-plugins-message-container">
+                            <div class="fv-help-block">
+                                <ErrorMessage name="foto_barang" />
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Input group-->
+                </div>
             </div>
         </div>
         <div class="card-footer d-flex">

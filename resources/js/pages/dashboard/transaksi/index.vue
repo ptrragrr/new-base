@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import axios from "@/libs/axios";
 import FormTransaksi from "./Form.vue";
 import type { Barang, Kategori } from "@/types";
@@ -19,7 +19,7 @@ const barangList = computed(() => {
     // Filter hanya barang yang stoknya > 0
     const tersedia = allBarang.filter((b) => Number(b.stok_barang) > 0);
 
-    if (selectedKategoriId.value && selectedKategoriId.value !== 0) {
+    if (selectedKategoriId.value && selectedKategoriId.value != 0) {
         console.log("KAtegori",selectedKategoriId.value)
         return tersedia.filter(
             (b) => b.id_kategori == selectedKategoriId.value
@@ -28,13 +28,27 @@ const barangList = computed(() => {
     return tersedia;
 });
 
+watch(selectedKategoriId, (val)=>{
+    console.log(val)
+})
+
 const kategori = useKategori();
-const kategoris = computed(() =>
-    kategori.data.value?.map((item: Kategori) => ({
-        id: item.id,
-        text: item.nama,
-    }))
-);
+const kategoris = computed(() => {
+    const data = kategori.data.value || [];
+    return [
+        { id: 0, text: "SEMUA KATEGORI" }, // Tambah opsi manual di awal
+        ...data.map((item: Kategori) => ({
+            id: item.id,
+            text: item.nama,
+        }))
+    ];
+});
+// const kategoris = computed(() =>
+//     kategori.data.value?.map((item: Kategori) => ({
+//         id: item.id,
+//         text: item.nama,
+//     }))
+// );
 
 // const barangList = computed(() => {
 //   const allBarang = barang.data.value || [];
